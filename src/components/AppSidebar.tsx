@@ -84,8 +84,8 @@ export function AppSidebar() {
                 <User className="h-5 w-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm">John Doe</div>
-                <div className="text-xs text-muted-foreground truncate">john@example.com</div>
+                <div className="font-medium text-sm">Yash Gupta</div>
+                <div className="text-xs text-muted-foreground truncate">yash@gmail.com</div>
               </div>
             </div>
           </div>

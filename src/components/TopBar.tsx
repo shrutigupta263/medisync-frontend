@@ -79,7 +79,7 @@ export function TopBar() {
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  JD
+                  YG
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -159,12 +159,12 @@ export function TopBar() {
               <div className="flex items-center gap-3">
                 <Avatar className="h-12 w-12">
                   <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-medium">
-                    JD
+                    YG
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm text-foreground">John Doe</div>
-                  <div className="text-xs text-muted-foreground truncate">john@example.com</div>
+                  <div className="font-semibold text-sm text-foreground">Yash Gupta</div>
+                  <div className="text-xs text-muted-foreground truncate">yash@gmail.com</div>
                 </div>
               </div>
             </div>

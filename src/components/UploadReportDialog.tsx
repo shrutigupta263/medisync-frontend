@@ -28,15 +28,37 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = useCallback((file: File) => {
-    if (file && (file.type === 'application/pdf' || file.type.startsWith('image/'))) {
-      setSelectedFile(file);
-      // Simulate moving to analyzing step
-      setTimeout(() => setCurrentStep(2), 500);
-      // Simulate analysis completion
-      setTimeout(() => setCurrentStep(3), 2500);
+    // Clear any previous error message
+    setErrorMessage(null);
+    
+    if (file) {
+      // Check if the file is an image
+      if (file.type.startsWith('image/')) {
+        setErrorMessage("Wrong content. Please upload a valid report file.");
+        return;
+      }
+      
+      // Check if the file is a PDF
+      if (file.type === 'application/pdf') {
+        // Check if the filename is exactly "Yash-Medical-Report-2024.pdf"
+        if (file.name !== "Yash-Medical-Report-2024.pdf") {
+          setErrorMessage("Invalid file. Only Medical-Report is accepted.");
+          return;
+        }
+        
+        // File is valid - proceed with normal flow
+        setSelectedFile(file);
+        // Simulate moving to analyzing step
+        setTimeout(() => setCurrentStep(2), 500);
+        // Simulate analysis completion
+        setTimeout(() => setCurrentStep(3), 2500);
+      } else {
+        setErrorMessage("Wrong content. Please upload a valid report file.");
+      }
     }
   }, []);
 
@@ -75,6 +97,7 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
     setCurrentStep(1);
     setSelectedFile(null);
     setIsDragOver(false);
+    setErrorMessage(null);
     onOpenChange(false);
   };
 
@@ -115,7 +138,7 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
                   Browse Files
                 </Button>
                 <p className="text-sm text-gray-400">
-                  Supported formats: PDF, JPG, PNG
+                  Supported formats: PDF
                 </p>
               </div>
             </div>
@@ -123,10 +146,23 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
             <input
               ref={fileInputRef}
               type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
+              accept=".pdf"
               onChange={handleFileInputChange}
               className="hidden"
             />
+            
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-red-800">
+                      {errorMessage}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
 
@@ -217,9 +253,6 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
           <div className="flex items-center justify-between">
             <div>
               <DialogTitle>Upload Medical Report</DialogTitle>
-              <DialogDescription>
-                Upload your medical report to get AI-powered insights
-              </DialogDescription>
             </div>
             <Button
               variant="ghost"

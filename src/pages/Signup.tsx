@@ -79,7 +79,7 @@ export default function Signup() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="yash@gmail.com"
                 value={formData.email}
                 onChange={handleInputChange}
                 required

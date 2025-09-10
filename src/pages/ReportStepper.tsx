@@ -31,6 +31,7 @@ export default function ReportStepper() {
     notes: '',
     file: null as File | null,
   });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Load medical report JSON data when component mounts
   useEffect(() => {
@@ -68,15 +69,36 @@ export default function ReportStepper() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    // Clear any previous error message
+    setErrorMessage(null);
+    
     if (file) {
-      setFormData({ ...formData, file });
-      // Auto-populate some fields based on filename
-      setFormData(prev => ({
-        ...prev,
-        file,
-        title: file.name.replace('.pdf', '').replace(/[-_]/g, ' '),
-        date: new Date().toISOString().split('T')[0],
-      }));
+      // Check if the file is an image
+      if (file.type.startsWith('image/')) {
+        setErrorMessage("Wrong content. Please upload a valid report file.");
+        return;
+      }
+      
+      // Check if the file is a PDF
+      if (file.type === 'application/pdf') {
+        // Check if the filename is exactly "Yash-Medical-Report-2024.pdf"
+        if (file.name !== "Yash-Medical-Report-2024.pdf") {
+          setErrorMessage("Invalid file. Only Yash-Medical-Report-2024.pdf is accepted.");
+          return;
+        }
+        
+        // File is valid - proceed with normal flow
+        setFormData({ ...formData, file });
+        // Auto-populate some fields based on filename
+        setFormData(prev => ({
+          ...prev,
+          file,
+          title: file.name.replace('.pdf', '').replace(/[-_]/g, ' '),
+          date: new Date().toISOString().split('T')[0],
+        }));
+      } else {
+        setErrorMessage("Wrong content. Please upload a valid report file.");
+      }
     }
   };
 
@@ -89,7 +111,7 @@ export default function ReportStepper() {
               <Upload className="mx-auto h-12 w-12 text-primary mb-4" />
               <h3 className="text-lg font-semibold mb-2">Upload Your Report</h3>
               <p className="text-muted-foreground">
-                Select a PDF, image, or document file containing your medical report
+                Select a PDF file containing your medical report
               </p>
             </div>
             
@@ -99,7 +121,7 @@ export default function ReportStepper() {
                 <Input
                   id="file"
                   type="file"
-                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  accept=".pdf"
                   onChange={handleFileChange}
                   className="cursor-pointer"
                 />
@@ -107,6 +129,24 @@ export default function ReportStepper() {
                   <p className="text-sm text-muted-foreground mt-2">
                     Selected: {formData.file.name}
                   </p>
+                )}
+                
+                {/* Error Message */}
+                {errorMessage && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-2">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <p className="text-sm font-medium text-red-800">
+                          {errorMessage}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
 

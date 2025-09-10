@@ -32,7 +32,7 @@ interface FamilyMemberHealth {
 const familyHealthData: FamilyMemberHealth[] = [
   {
     id: '1',
-    name: 'John Doe',
+    name: 'Yash Gupta',
     relationship: 'Self',
     age: 34,
     healthScore: 92,
