@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, FileText, CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Upload, FileText, CheckCircle, ArrowLeft, ArrowRight, Code, Eye, EyeOff } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { loadMedicalReportData, extractMedicalReportInfo, type MedicalReportData } from '@/utils/swagger-loader';
 
 const steps = [
   { id: 1, title: 'Upload', icon: Upload, description: 'Upload your report file' },
@@ -18,6 +20,8 @@ const steps = [
 export default function ReportStepper() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [medicalReportData, setMedicalReportData] = useState<MedicalReportData | null>(null);
+  const [showJsonData, setShowJsonData] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     type: '',
@@ -27,6 +31,23 @@ export default function ReportStepper() {
     notes: '',
     file: null as File | null,
   });
+
+  // Load medical report JSON data when component mounts
+  useEffect(() => {
+    const loadReportData = async () => {
+      // Load the medical report response data
+      const data = await loadMedicalReportData('/medical-report-response.json');
+      
+      if (data) {
+        setMedicalReportData(data);
+        console.log('Medical report data loaded successfully');
+      } else {
+        console.log('Failed to load medical report data');
+      }
+    };
+
+    loadReportData();
+  }, []);
 
   const handleNext = () => {
     if (currentStep < 3) {
@@ -223,6 +244,205 @@ export default function ReportStepper() {
                   <div><strong>File:</strong> {formData.file?.name || 'No file selected'}</div>
                 </CardContent>
               </Card>
+
+              {/* Medical Report Data Display */}
+              {medicalReportData && (
+                <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-green-600 dark:text-green-400" />
+                        <CardTitle className="text-sm text-green-800 dark:text-green-200">
+                          Medical Report Analysis
+                        </CardTitle>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowJsonData(!showJsonData)}
+                        className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200"
+                      >
+                        {showJsonData ? (
+                          <>
+                            <EyeOff className="h-4 w-4 mr-1" />
+                            Hide Full Report
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="h-4 w-4 mr-1" />
+                            View Full Report
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {(() => {
+                      const info = extractMedicalReportInfo(medicalReportData);
+                      return (
+                        <div className="space-y-4">
+                          {/* Patient Information */}
+                          <div className="text-sm text-green-700 dark:text-green-300">
+                            <div><strong>Patient:</strong> {info.patientName}</div>
+                            <div><strong>Age:</strong> {info.patientAge}</div>
+                            <div><strong>Gender:</strong> {info.patientGender}</div>
+                            <div><strong>Patient ID:</strong> {info.patientId}</div>
+                          </div>
+
+                          {/* Lab Information */}
+                          <div className="text-sm text-green-700 dark:text-green-300 border-t pt-2">
+                            <div><strong>Lab:</strong> {info.labName}</div>
+                            <div><strong>Report Date:</strong> {new Date(info.reportDate).toLocaleDateString()}</div>
+                            <div><strong>Status:</strong> <Badge variant={info.status === 'COMPLETED' ? 'default' : 'secondary'}>{info.status}</Badge></div>
+                          </div>
+
+                          {/* Health Score */}
+                          <div className="text-sm text-green-700 dark:text-green-300 border-t pt-2">
+                            <div className="flex items-center gap-2">
+                              <strong>Overall Health Score:</strong> 
+                              <Badge variant={info.overallHealthScore >= 80 ? 'default' : info.overallHealthScore >= 60 ? 'secondary' : 'destructive'}>
+                                {info.overallHealthScore}/100
+                              </Badge>
+                            </div>
+                            <div><strong>Test Categories:</strong> {info.testCategoriesCount}</div>
+                            <div><strong>Summary Points:</strong> {info.summaryCount}</div>
+                            <div><strong>Flagged Items:</strong> {info.flagsCount}</div>
+                            <div><strong>Abnormal Findings:</strong> {info.abnormalFindingsCount}</div>
+                            <div><strong>Recommendations:</strong> {info.recommendationsCount}</div>
+                          </div>
+
+                          {/* Key Insights */}
+                          {medicalReportData.plainTextInsights?.summary && (
+                            <div className="text-sm text-green-700 dark:text-green-300 border-t pt-2">
+                              <strong className="block mb-2">Key Insights:</strong>
+                              <ul className="list-disc list-inside space-y-1 text-xs">
+                                {medicalReportData.plainTextInsights.summary.slice(0, 3).map((insight, index) => (
+                                  <li key={index}>{insight}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Health Score Interpretation */}
+                          {medicalReportData.healthScore?.interpretation && (
+                            <div className="text-sm text-green-700 dark:text-green-300 border-t pt-2">
+                              <strong className="block mb-2">Health Assessment:</strong>
+                              <p className="text-xs line-clamp-3">
+                                {medicalReportData.healthScore.interpretation.substring(0, 200)}...
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                    
+                    <Collapsible open={showJsonData} onOpenChange={setShowJsonData}>
+                      <CollapsibleContent>
+                        <div className="mt-4 space-y-4">
+                          {/* Complete Summary */}
+                          {medicalReportData.summary && (
+                            <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3">
+                                Complete Medical Summary ({medicalReportData.summary.length} findings)
+                              </h4>
+                              <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
+                                {medicalReportData.summary.map((item, index) => (
+                                  <li key={index} className="flex items-start">
+                                    <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Abnormal Findings */}
+                          {medicalReportData.plainTextInsights?.abnormalFindings && (
+                            <div className="p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
+                              <h4 className="font-semibold text-red-800 dark:text-red-200 mb-3">
+                                ⚠️ Abnormal Findings ({medicalReportData.plainTextInsights.abnormalFindings.length})
+                              </h4>
+                              <ul className="space-y-1 text-sm text-red-700 dark:text-red-300">
+                                {medicalReportData.plainTextInsights.abnormalFindings.map((finding, index) => (
+                                  <li key={index} className="flex items-start">
+                                    <span className="inline-block w-2 h-2 bg-red-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    {finding}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Recommendations */}
+                          {medicalReportData.plainTextInsights?.recommendations && (
+                            <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                              <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3">
+                                💡 Clinical Recommendations ({medicalReportData.plainTextInsights.recommendations.length})
+                              </h4>
+                              <ul className="space-y-1 text-sm text-green-700 dark:text-green-300">
+                                {medicalReportData.plainTextInsights.recommendations.map((rec, index) => (
+                                  <li key={index} className="flex items-start">
+                                    <span className="inline-block w-2 h-2 bg-green-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    {rec}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Follow-up Suggestions */}
+                          {medicalReportData.plainTextInsights?.followUpSuggestions && (
+                            <div className="p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                              <h4 className="font-semibold text-purple-800 dark:text-purple-200 mb-3">
+                                🏥 Follow-up Suggestions ({medicalReportData.plainTextInsights.followUpSuggestions.length})
+                              </h4>
+                              <ul className="space-y-1 text-sm text-purple-700 dark:text-purple-300">
+                                {medicalReportData.plainTextInsights.followUpSuggestions.map((suggestion, index) => (
+                                  <li key={index} className="flex items-start">
+                                    <span className="inline-block w-2 h-2 bg-purple-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    {suggestion}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Health Score Categories */}
+                          {medicalReportData.healthScore?.categories && (
+                            <div className="p-4 bg-gray-50 dark:bg-gray-950/20 rounded-lg">
+                              <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                                📊 Health Score by Category
+                              </h4>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                {Object.entries(medicalReportData.healthScore.categories).map(([category, score]) => (
+                                  <div key={category} className="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded">
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{category}</span>
+                                    <Badge variant={score >= 80 ? 'default' : score >= 60 ? 'secondary' : 'destructive'}>
+                                      {score}/100
+                                    </Badge>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Health Score Interpretation */}
+                          {medicalReportData.healthScore?.interpretation && (
+                            <div className="p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
+                              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-3">
+                                🔍 Detailed Health Assessment
+                              </h4>
+                              <p className="text-sm text-yellow-700 dark:text-yellow-300 leading-relaxed">
+                                {medicalReportData.healthScore.interpretation}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         );

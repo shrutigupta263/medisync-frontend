@@ -1,0 +1,965 @@
+{
+  "_id": "680a3398963df6569f584d01",
+  "fileUrl": "http://localhost:9000/mediwise-health/reports/1745499032301-Yash%20Medical%20Report%202024.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20250424%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250424T125032Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a7c4acbb1111359274f19138c8683e16b0a29e9dbf7fc7823de80c960b0ca2eb",
+  "status": "COMPLETED",
+  "summary": [
+    "Packed Cell Volume slightly elevated",
+    "MPV value is high",
+    "Basophils percentage is at the upper limit of the normal range",
+    "CRP levels within normal limits indicating no acute inflammation",
+    "RBC count is at the upper limit of the normal range",
+    "No abnormal cells seen in DLC",
+    "Platelets are adequate on smear",
+    "Fasting blood sugar level within non-diabetic range",
+    "HbA1c level indicates no diabetes",
+    "Thyroid Stimulating Hormone (TSH) level slightly elevated",
+    "Free Triiodothyronine (FT3) and Free Thyroxine (FT4) levels within normal range",
+    "Blood Urea Nitrogen (BUN) level within normal range",
+    "Sodium levels are slightly low",
+    "Potassium levels are slightly high",
+    "Chloride levels are slightly low",
+    "Direct Bilirubin levels are slightly high",
+    "Overall kidney and liver function tests are within normal limits",
+    "LDL Cholesterol levels are high indicating potential risk for cardiovascular diseases.",
+    "HDL Cholesterol levels are low, which may increase the risk of heart disease.",
+    "Total Cholesterol/HDL Ratio is slightly above the normal range, indicating a higher risk of heart disease.",
+    "Non-HDL Cholesterol is above the desirable level, indicating an increased risk of cardiovascular diseases.",
+    "CRP levels are within normal limits, suggesting low inflammation.",
+    "Apolipoprotein A and B levels are within normal ranges.",
+    "Elevated Homocysteine level indicating potential risk for cardiovascular diseases or vitamin B12/folate deficiency",
+    "Normal Creatine Kinase (CPK) level",
+    "Normal Inorganic Phosphorus level",
+    "Normal Parathyroid Hormone (PTH) level",
+    "Normal Rheumatoid Factor indicating low likelihood of rheumatoid arthritis",
+    "Transferrin Saturation within normal limits",
+    "Ferritin levels are normal",
+    "LDH (Lactate Dehydrogenase) Total within normal range",
+    "Vitamin B12 levels are within normal limits",
+    "Total Iron Binding Capacity slightly above the provided reference range",
+    "Folate levels within normal range",
+    "Vitamin D levels indicate deficiency",
+    "Hepatitis B Surface Antigen (HBsAg) is non-reactive, indicating no current hepatitis B infection",
+    "Anti HBs Titre indicates non-immunity to Hepatitis B",
+    "HCV IgG Antibody result is non-reactive, indicating no Hepatitis C infection",
+    "Cortisol levels within normal range",
+    "Urine analysis shows normal specific gravity, pH, and no abnormal constituents",
+    "Presence of 1-2 White Blood Cells and Squamous Epithelial Cells in urine, within normal limits",
+    "Albumin/Creatinine Ratio indicates microalbuminurea",
+    "Urine Albumin level is significantly elevated",
+    "Urine Creatinine level within normal range",
+    "Several tests including Homa-IR, G-6-PD, Allergy Screen, and Covid 19 IgG Antibody are pending",
+    "Immediate clinical correlation recommended for microalbuminurea",
+    "Further evaluation for insulin resistance, G-6-PD deficiency, allergies, and Covid-19 immunity is pending due to unavailability of samples"
+  ],
+  "createdAt": "2025-04-24T12:50:32.602Z",
+  "updatedAt": "2025-04-24T12:53:20.476Z",
+  "extractedData": {
+    "patientDetails": {
+      "name": "Mr. Yash Gupta",
+      "age": "24 Y 8 M 21 D",
+      "gender": "M",
+      "patientId": "ML04370386"
+    },
+    "doctorDetails": {
+      "referredBy": "Self",
+      "referringHospital": null,
+      "doctorSpecialization": null
+    },
+    "labDetails": {
+      "labName": "NANAVATI SUPERSPECIALITY HOSPITAL, MUMBAI",
+      "collectionDateTime": "2024-01-13 10:11:00",
+      "reportingDateTime": "2024-01-14 08:17:00",
+      "centre": "3950 - Digital Home Collection Pune",
+      "labId": "3730012400007~1",
+      "accreditationInfo": null
+    },
+    "reportTypes": {
+      "Hematology": [
+        {
+          "parameter": "Haemoglobin",
+          "value": "16.0",
+          "unit": "g/dl",
+          "normalRange": "13 - 17",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Packed Cell, Volume",
+          "value": "50.2",
+          "unit": "%",
+          "normalRange": "40 - 50",
+          "status": "High"
+        },
+        {
+          "parameter": "Total Leucocyte Count (TLC)",
+          "value": "5980",
+          "unit": "/μL",
+          "normalRange": "4000 -10000",
+          "status": "Normal"
+        },
+        {
+          "parameter": "RBC Count",
+          "value": "5.53",
+          "unit": "mill/μL",
+          "normalRange": "4.5 - 5.5",
+          "status": "High"
+        },
+        {
+          "parameter": "MCV",
+          "value": "90.9",
+          "unit": "fl",
+          "normalRange": "81 - 99",
+          "status": "Normal"
+        },
+        {
+          "parameter": "MCH",
+          "value": "28.9",
+          "unit": "Pg",
+          "normalRange": "27 - 32",
+          "status": "Normal"
+        },
+        {
+          "parameter": "MCHC",
+          "value": "31.8",
+          "unit": "g/dl",
+          "normalRange": "31.5 - 34.5",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Platelet Count",
+          "value": "201",
+          "unit": "x 1000/μL",
+          "normalRange": "150 - 400",
+          "status": "Normal"
+        },
+        {
+          "parameter": "MPV",
+          "value": "13.4",
+          "unit": "fl",
+          "normalRange": "7 - 12",
+          "status": "High"
+        },
+        {
+          "parameter": "RDW",
+          "value": "13.0",
+          "unit": "%",
+          "normalRange": "11 - 16",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Neutrophils",
+          "value": "59.6",
+          "unit": "%",
+          "normalRange": "40 - 80",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Lymphocytes",
+          "value": "32.3",
+          "unit": "%",
+          "normalRange": "20 - 40",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Monocytes",
+          "value": "5.2",
+          "unit": "%",
+          "normalRange": "2 - 10",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Eosinophils",
+          "value": "2.5",
+          "unit": "%",
+          "normalRange": "2 - 6",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Basophils",
+          "value": "0.4",
+          "unit": "%",
+          "normalRange": "0 - 2",
+          "status": "Normal"
+        },
+        {
+          "parameter": "ESR (Modified Westergren)",
+          "value": "03",
+          "unit": "mm/hr",
+          "normalRange": "0 - 20",
+          "status": "Normal"
+        }
+      ],
+      "Clinical Biochemistry": [
+        {
+          "parameter": "CRP",
+          "value": "1.14",
+          "unit": "mg/L",
+          "normalRange": "<5.0",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Glucose (Fasting)",
+          "value": "82.1",
+          "unit": "mg/dl",
+          "normalRange": "60 - 100",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Glycosylated Haemoglobin(Hb A1c)",
+          "value": "5.3%",
+          "unit": "%",
+          "normalRange": "0 - 5.7",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Glycosylated Haemoglobin(Hb A1c) IFCC",
+          "value": "34.63",
+          "unit": "mmol/mol",
+          "normalRange": "< 39.0",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Average Glucose Value For the Last 3 Months",
+          "value": "105.98",
+          "unit": "mg/dL",
+          "normalRange": null,
+          "status": "Normal"
+        },
+        {
+          "parameter": "Average Glucose Value For the Last 3 Months IFCC",
+          "value": "5.87",
+          "unit": "mmol/L",
+          "normalRange": null,
+          "status": "Normal"
+        },
+        {
+          "parameter": "Creatine Kinase (CPK)",
+          "value": "85",
+          "unit": "U/L",
+          "normalRange": "0 - 190",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Homocysteine, Quantitative",
+          "value": "23.60",
+          "unit": "μmol/L",
+          "normalRange": "0-15",
+          "status": "High"
+        },
+        {
+          "parameter": "Inorganic Phosphorus",
+          "value": "3.36",
+          "unit": "mg/dl",
+          "normalRange": "2.5 - 4.5",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Iron",
+          "value": "158.60",
+          "unit": "μg/dL",
+          "normalRange": "49 - 181",
+          "status": "Normal"
+        },
+        {
+          "parameter": "UIBC",
+          "value": "216.7",
+          "unit": "μg/dL",
+          "normalRange": "125 - 345",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Total Iron Binding Capacity",
+          "value": "375.3",
+          "unit": "μg/dl",
+          "normalRange": "265 - 497",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Transferrin Saturation",
+          "value": "42.26",
+          "unit": "%",
+          "normalRange": "30 - 50",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Ferritin",
+          "value": "83.56",
+          "unit": "ng/mL",
+          "normalRange": "17 - 430",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Folate, Serum",
+          "value": "5.1",
+          "unit": "ng/mL",
+          "normalRange": "2.8 - 20 ng/ml",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Cortisol (Random)",
+          "value": "13.30",
+          "unit": "μg/dl",
+          "normalRange": null,
+          "status": "Normal"
+        },
+        {
+          "parameter": "Albumin, Urine",
+          "value": "24.0",
+          "unit": "mg/dL",
+          "normalRange": "< 1.9",
+          "status": "High"
+        },
+        {
+          "parameter": "Creatinine, Urine",
+          "value": "102.10",
+          "unit": "mg/dl",
+          "normalRange": "Not specified",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Albumin/Creatinine Ratio",
+          "value": "23.50",
+          "unit": "mg/g Creatinine",
+          "normalRange": "< 30",
+          "status": "Normal"
+        }
+      ],
+      "Immunoassay": [
+        {
+          "parameter": "Free Triiodothyronine (FT3)",
+          "value": "3.47",
+          "unit": "pg/mL",
+          "normalRange": "2.0 - 4.4",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Free Thyroxine (FT4)",
+          "value": "1.49",
+          "unit": "ng/dL",
+          "normalRange": "0.93 - 1.7",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Thyroid Stimulating Hormone",
+          "value": "5.41",
+          "unit": "mIU/L",
+          "normalRange": "0.27 - 4.2",
+          "status": "High"
+        },
+        {
+          "parameter": "PTH (Parathyroid Hormone)- Intact",
+          "value": "44.84",
+          "unit": "pg/mL",
+          "normalRange": "14-65",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Vitamin B12",
+          "value": "388.9",
+          "unit": "pg/mL",
+          "normalRange": "160 - 760",
+          "status": "Normal"
+        },
+        {
+          "parameter": "25 Hydroxy, Vitamin D",
+          "value": "11.13",
+          "unit": "ng/mL",
+          "normalRange": "<20 - DEFICIENCY, 20 - 30 - INSUFFICIENCY, >30 - SUFFICIENCY, >100 - TOXICITY",
+          "status": "Low"
+        }
+      ],
+      "Clinical Biochemistry 2": [
+        {
+          "parameter": "Blood Urea Nitrogen",
+          "value": "8",
+          "unit": "mg/dl",
+          "normalRange": "7 - 21",
+          "status": "Normal"
+        }
+      ],
+      "Kidney Function Test": [
+        {
+          "parameter": "Urea",
+          "value": "17.3",
+          "unit": "mg/dl",
+          "normalRange": "19.3 - 42.6",
+          "status": "Low"
+        },
+        {
+          "parameter": "Blood Urea Nitrogen",
+          "value": "8.08",
+          "unit": "mg/dl",
+          "normalRange": "7 - 21",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Creatinine",
+          "value": "0.87",
+          "unit": "mg/dl",
+          "normalRange": "0.7 - 1.2",
+          "status": "Normal"
+        },
+        {
+          "parameter": "eGFR by MDRD",
+          "value": "107.17",
+          "unit": "ml/min/1.73m^2",
+          "normalRange": "> 90",
+          "status": "Normal"
+        },
+        {
+          "parameter": "eGFR by CKD EPI",
+          "value": "122.15",
+          "unit": null,
+          "normalRange": null,
+          "status": "Normal"
+        },
+        {
+          "parameter": "Bun/Creatinine Ratio",
+          "value": "9.20",
+          "unit": null,
+          "normalRange": "10:1 - 20:1",
+          "status": "Low"
+        },
+        {
+          "parameter": "Uric Acid",
+          "value": "4.3",
+          "unit": "mg/dl",
+          "normalRange": "3.4 - 7.0",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Calcium (Total)",
+          "value": "9.42",
+          "unit": "mg/dl",
+          "normalRange": "8.6 - 10.2",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Sodium",
+          "value": "134.0",
+          "unit": "mEq/L",
+          "normalRange": "135 - 148",
+          "status": "Low"
+        },
+        {
+          "parameter": "Potassium",
+          "value": "5.60",
+          "unit": "mEq/L",
+          "normalRange": "3.8 - 5.2",
+          "status": "High"
+        },
+        {
+          "parameter": "Chloride",
+          "value": "98",
+          "unit": "mEq/L",
+          "normalRange": "100 - 105",
+          "status": "Low"
+        },
+        {
+          "parameter": "Bicarbonate",
+          "value": "25.0",
+          "unit": "mEq/L",
+          "normalRange": "22 - 29",
+          "status": "Normal"
+        }
+      ],
+      "Liver Function Test": [
+        {
+          "parameter": "Total Protein",
+          "value": "8.14",
+          "unit": "gm/dl",
+          "normalRange": "6.4 - 8.2",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Albumin",
+          "value": "5.0",
+          "unit": "gm/dl",
+          "normalRange": "3.5 - 5.2",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Globulin",
+          "value": "3.1",
+          "unit": "gm/dl",
+          "normalRange": "2.0 - 3.5",
+          "status": "Normal"
+        },
+        {
+          "parameter": "A.G. ratio",
+          "value": "1.6",
+          "unit": "Ratio",
+          "normalRange": "0.8 - 2.0",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Bilirubin (Total)",
+          "value": "0.913",
+          "unit": "mg/dl",
+          "normalRange": "<1.2",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Bilirubin (Direct)",
+          "value": "0.271",
+          "unit": "mg/dl",
+          "normalRange": "< 0.2",
+          "status": "High"
+        },
+        {
+          "parameter": "Bilirubin (Indirect)",
+          "value": "0.64",
+          "unit": "mg/dl",
+          "normalRange": "0.0 - 0.8",
+          "status": "Normal"
+        },
+        {
+          "parameter": "SGOT- Aspartate Transaminase (AST)",
+          "value": "22.6",
+          "unit": "U/L",
+          "normalRange": "0 - 40",
+          "status": "Normal"
+        },
+        {
+          "parameter": "SGPT- Alanine Transaminase (ALT)",
+          "value": "23.5",
+          "unit": "U/L",
+          "normalRange": "0 - 40",
+          "status": "Normal"
+        },
+        {
+          "parameter": "AST/ALT Ratio",
+          "value": "0.96",
+          "unit": null,
+          "normalRange": "< 1",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Alkaline Phosphatase",
+          "value": "65",
+          "unit": "U/L",
+          "normalRange": "40 - 129",
+          "status": "Normal"
+        },
+        {
+          "parameter": "GGTP (Gamma GT)",
+          "value": "20.0",
+          "unit": "U/L",
+          "normalRange": "1 - 60",
+          "status": "Normal"
+        }
+      ],
+      "Lipid Profile": [
+        {
+          "parameter": "Cholesterol",
+          "value": "184.6",
+          "unit": "mg/dl",
+          "normalRange": "0 - 200",
+          "status": "Normal"
+        },
+        {
+          "parameter": "HDL Cholesterol",
+          "value": "41.1",
+          "unit": "mg/dl",
+          "normalRange": "> 60",
+          "status": "Low"
+        },
+        {
+          "parameter": "LDL Cholesterol",
+          "value": "131",
+          "unit": "mg/dl",
+          "normalRange": "0 - 100",
+          "status": "High"
+        },
+        {
+          "parameter": "Triglyceride",
+          "value": "76.5",
+          "unit": "mg/dl",
+          "normalRange": "0 - 150",
+          "status": "Normal"
+        },
+        {
+          "parameter": "VLDL Cholesterol",
+          "value": "15.3",
+          "unit": "mg/dl",
+          "normalRange": "0 - 40",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Total Cholesterol/HDL Ratio",
+          "value": "4.5",
+          "unit": "Ratio",
+          "normalRange": "3.3 - 4.4",
+          "status": "High"
+        },
+        {
+          "parameter": "Non-HDL Cholesterol",
+          "value": "143.50",
+          "unit": "mg/dL",
+          "normalRange": "< 130",
+          "status": "High"
+        },
+        {
+          "parameter": "HDL/LDL",
+          "value": "0.31",
+          "unit": "Ratio",
+          "normalRange": "0.3 - 0.4",
+          "status": "Normal"
+        }
+      ],
+      "Apolipoproteins": [
+        {
+          "parameter": "Apolipoprotein (A)",
+          "value": "129",
+          "unit": "mg/dl",
+          "normalRange": "101 - 215",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Apolipoprotein (B)",
+          "value": "87",
+          "unit": "mg/dl",
+          "normalRange": "51 - 132",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Apo B/ Apo A1 Ratio",
+          "value": "0.67",
+          "unit": null,
+          "normalRange": null,
+          "status": null
+        }
+      ],
+      "Inflammatory Markers": [
+        {
+          "parameter": "CRP (C-Reactive Protein), High Sensitive",
+          "value": "1.26",
+          "unit": "mg/L",
+          "normalRange": "< 5.0",
+          "status": "Normal"
+        }
+      ],
+      "Rheumatology": [
+        {
+          "parameter": "Rheumatoid Factor(Quantitative)",
+          "value": "< 10.0",
+          "unit": "IU/mL",
+          "normalRange": "0 - 14",
+          "status": "Normal"
+        }
+      ],
+      "Enzymes": [
+        {
+          "parameter": "LDH",
+          "value": "208",
+          "unit": "U/L",
+          "normalRange": "135 - 250",
+          "status": "Normal"
+        }
+      ],
+      "Serology": [
+        {
+          "parameter": "Hepatitis B Surface Antigen,Serum",
+          "value": "Non Reactive",
+          "unit": null,
+          "normalRange": "Reactive/Non-Reactive",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Anti Hbs Titre",
+          "value": "<2.0",
+          "unit": "mIU/mL",
+          "normalRange": "<10.0 Non-immune, ≥10.0 Immune",
+          "status": "Low"
+        },
+        {
+          "parameter": "HCV IgG Antibody",
+          "value": "NON REACTIVE",
+          "unit": null,
+          "normalRange": "Reactive/Non-Reactive",
+          "status": "Normal"
+        }
+      ],
+      "Urine Routine And Microscopy": [
+        {
+          "parameter": "Colour",
+          "value": "PALE YELLOW",
+          "unit": null,
+          "normalRange": "Pale Yellow - Deep Amber",
+          "status": "Normal"
+        },
+        {
+          "parameter": "PH",
+          "value": "6.0",
+          "unit": null,
+          "normalRange": "4.5 - 8.0",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Specific Gravity",
+          "value": "1.020",
+          "unit": null,
+          "normalRange": "1.005 - 1.030",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Protein",
+          "value": "ABSENT",
+          "unit": null,
+          "normalRange": "Nil",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Glucose",
+          "value": "ABSENT",
+          "unit": "mg/dl",
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Ketones",
+          "value": "ABSENT",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Blood",
+          "value": "ABSENT",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Bilirubin",
+          "value": "ABSENT",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Urobilinogen",
+          "value": "NORMAL",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Nitrite",
+          "value": "NEGATIVE",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Red Blood Cells (RBC)",
+          "value": "ABSENT",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "White Blood Cells",
+          "value": "1-2",
+          "unit": null,
+          "normalRange": null,
+          "status": "Normal"
+        },
+        {
+          "parameter": "Squamous Epithelial Cells",
+          "value": "1-2",
+          "unit": null,
+          "normalRange": null,
+          "status": "Normal"
+        },
+        {
+          "parameter": "Cast",
+          "value": "ABSENT",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Crystals",
+          "value": "ABSENT",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        },
+        {
+          "parameter": "Bacteria",
+          "value": "ABSENT",
+          "unit": null,
+          "normalRange": "Absent",
+          "status": "Normal"
+        }
+      ]
+    },
+    "flags": [
+      {
+        "parameter": "Packed Cell, Volume",
+        "value": "50.2%",
+        "status": "High",
+        "recommendation": "Consider evaluation for causes of polycythemia."
+      },
+      {
+        "parameter": "MPV",
+        "value": "13.4fl",
+        "status": "High",
+        "recommendation": "Assess for possible platelet dysfunction or increased platelet production."
+      },
+      {
+        "parameter": "Thyroid Stimulating Hormone",
+        "value": "5.41",
+        "status": "High",
+        "recommendation": "Consider evaluation for hypothyroidism or adjusting thyroid medication if currently being treated."
+      },
+      {
+        "parameter": "Urea",
+        "value": "17.3",
+        "status": "Low",
+        "recommendation": "Consider rehydration and reevaluation."
+      },
+      {
+        "parameter": "Bun/Creatinine Ratio",
+        "value": "9.20",
+        "status": "Low",
+        "recommendation": "Assess for potential liver disease or malnutrition."
+      },
+      {
+        "parameter": "Sodium",
+        "value": "134.0",
+        "status": "Low",
+        "recommendation": "Evaluate for possible hyponatremia."
+      },
+      {
+        "parameter": "Potassium",
+        "value": "5.60",
+        "status": "High",
+        "recommendation": "Monitor for hyperkalemia, consider dietary modification."
+      },
+      {
+        "parameter": "Chloride",
+        "value": "98",
+        "status": "Low",
+        "recommendation": "Check for signs of dehydration or compensation for respiratory alkalosis."
+      },
+      {
+        "parameter": "Bilirubin (Direct)",
+        "value": "0.271",
+        "status": "High",
+        "recommendation": "Further evaluation for direct hyperbilirubinemia is recommended."
+      },
+      {
+        "parameter": "HDL Cholesterol",
+        "value": "41.1",
+        "status": "Low",
+        "recommendation": "Consider increasing intake of omega-3 fatty acids and regular physical activity."
+      },
+      {
+        "parameter": "LDL Cholesterol",
+        "value": "131",
+        "status": "High",
+        "recommendation": "Recommend dietary adjustments and possibly statin therapy after further evaluation."
+      },
+      {
+        "parameter": "Total Cholesterol/HDL Ratio",
+        "value": "4.5",
+        "status": "High",
+        "recommendation": "Evaluate cardiovascular risk factors and consider lifestyle modifications."
+      },
+      {
+        "parameter": "Non-HDL Cholesterol",
+        "value": "143.50",
+        "status": "High",
+        "recommendation": "Advise on reducing saturated fats in diet and reassess in 3-6 months."
+      },
+      {
+        "parameter": "Homocysteine, Quantitative",
+        "value": "23.60",
+        "status": "High",
+        "recommendation": "Consider evaluating for vitamin B12 and folate levels. Advise dietary modification and possibly supplementation."
+      },
+      {
+        "parameter": "Total Iron Binding Capacity",
+        "value": "375.3",
+        "status": "High",
+        "recommendation": "Slightly above normal range, recommend correlation with clinical findings and potential further investigation if clinically indicated."
+      },
+      {
+        "parameter": "25 Hydroxy, Vitamin D",
+        "value": "11.13",
+        "status": "Low",
+        "recommendation": "Consider Vitamin D supplementation and exposure to sunlight. Re-evaluate in 3 months."
+      },
+      {
+        "parameter": "Anti Hbs Titre",
+        "value": "<2.0 mIU/mL",
+        "status": "Low",
+        "recommendation": "Consider vaccination or booster for Hepatitis B immunity."
+      },
+      {
+        "parameter": "Albumin, Urine",
+        "value": "24.0 mg/dL",
+        "status": "High",
+        "recommendation": "Assess for possible kidney damage or disease; further diagnostic testing may be required."
+      }
+    ]
+  },
+  "healthScore": {
+    "overall": 76,
+    "categories": {
+      "Hematology": 85,
+      "Clinical Biochemistry": 75,
+      "Immunoassay": 80,
+      "Clinical Biochemistry 2": 90,
+      "Kidney Function Test": 70,
+      "Liver Function Test": 80,
+      "Lipid Profile": 70,
+      "Apolipoproteins": 90,
+      "Inflammatory Markers": 90,
+      "Rheumatology": 90,
+      "Enzymes": 90,
+      "Serology": 80,
+      "Urine Routine And Microscopy": 75
+    },
+    "interpretation": "The overall health score of 76 indicates good health but with areas requiring attention. Key findings include elevated Packed Cell Volume and RBC count, suggesting a potential for polycythemia. High MPV values may indicate platelet dysfunction or increased production. The elevated Thyroid Stimulating Hormone (TSH) level suggests a possible thyroid function issue, while the lipid profile shows increased LDL and low HDL cholesterol levels, indicating a risk for cardiovascular diseases. The Total Cholesterol/HDL Ratio and Non-HDL Cholesterol are also high, further emphasizing cardiovascular risk. Homocysteine levels are elevated, suggesting a risk for cardiovascular diseases or a vitamin B12/folate deficiency. Vitamin D deficiency is noted, which requires supplementation. The Kidney Function Test reveals microalbuminuria, indicating potential kidney damage. Sodium, Potassium, and Chloride levels are slightly off, suggesting electrolyte imbalance. Direct Bilirubin is slightly high, indicating liver function needs to be monitored. The presence of abnormalities across multiple systems, particularly concerning cardiovascular and kidney health, has influenced the overall and category-specific scores. Immediate clinical correlation and further evaluation as recommended in the flags are essential to address these findings."
+  },
+  "plainTextInsights": {
+    "summary": [
+      "Mr. Yash Gupta's lab results indicate overall good health with several areas requiring attention, particularly related to cardiovascular risk factors and kidney health.",
+      "Key strengths include normal fasting blood sugar levels, adequate platelets, and no acute inflammation, suggesting good metabolic and immune health.",
+      "Areas of concern include elevated packed cell volume and RBC count, high MPV, slightly elevated TSH, abnormal electrolyte levels (sodium, potassium, chloride), direct bilirubin levels, lipid profile abnormalities, elevated homocysteine, vitamin D deficiency, low immunity to Hepatitis B, and signs of microalbuminurea."
+    ],
+    "abnormalFindings": [
+      "Elevated packed cell volume and RBC count may indicate polycythemia, which can increase the risk of blood clots.",
+      "High Mean Platelet Volume (MPV) suggests an increased production of platelets, which can be associated with various conditions including inflammation or bone marrow disorders.",
+      "Slightly elevated Thyroid Stimulating Hormone (TSH) level suggests a potential for hypothyroidism, affecting metabolism.",
+      "Low sodium and chloride levels, coupled with high potassium, indicate electrolyte imbalances that can affect heart and muscle function.",
+      "Direct bilirubin levels are slightly high, indicating possible liver function abnormalities.",
+      "High LDL cholesterol and low HDL cholesterol levels increase the risk for cardiovascular diseases.",
+      "The Total Cholesterol/HDL Ratio and Non-HDL Cholesterol being high suggests an increased risk of heart disease.",
+      "Elevated homocysteine levels are linked to a higher risk of heart disease, stroke, and vitamin B12 or folate deficiency.",
+      "Vitamin D deficiency can lead to bone health issues and has been linked to other chronic diseases.",
+      "Low Anti HBs Titre indicates non-immunity to Hepatitis B, suggesting a need for vaccination.",
+      "Urine Albumin levels are elevated, indicating possible kidney damage or disease."
+    ],
+    "recommendations": [
+      "Increase intake of omega-3 fatty acids and fiber-rich foods to improve HDL levels and reduce LDL cholesterol.",
+      "Consider Vitamin D supplementation and increase exposure to sunlight to address the deficiency.",
+      "Engage in regular physical activity, aiming for at least 150 minutes of moderate exercise per week to improve cardiovascular health.",
+      "Monitor salt intake to manage sodium levels and consider a diet rich in fruits, vegetables, and low-fat dairy products to balance electrolytes.",
+      "Stay hydrated and consider reducing protein intake if advised by your healthcare provider to address the elevated packed cell volume.",
+      "Consider a diet low in saturated fats and cholesterol to address lipid profile abnormalities.",
+      "Evaluate vitamin B12 and folate intake through diet or supplements to address elevated homocysteine levels."
+    ],
+    "followUpSuggestions": [
+      "Consult with an endocrinologist for further evaluation and potential treatment of thyroid function abnormalities.",
+      "Follow up with a nephrologist to assess kidney function and the significance of microalbuminurea.",
+      "Schedule a consultation with a cardiologist to assess cardiovascular risk factors and manage elevated homocysteine and cholesterol levels.",
+      "Consider retesting electrolyte levels (sodium, potassium, chloride) after dietary and hydration adjustments.",
+      "Schedule a liver function test to further investigate the cause of elevated direct bilirubin levels.",
+      "Consult with a nutritionist to develop a personalized diet plan addressing the abnormal findings and improving overall health.",
+      "Consider getting vaccinated for Hepatitis B to achieve immunity."
+    ]
+  }
+}

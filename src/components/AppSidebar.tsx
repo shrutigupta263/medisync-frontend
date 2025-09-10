@@ -9,7 +9,8 @@ import {
   Pill,
   Activity,
   Brain,
-  Stethoscope
+  Stethoscope,
+  User
 } from "lucide-react";
 import {
   Sidebar,
@@ -26,16 +27,14 @@ import {
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Reports", url: "/reports", icon: FileText },
-  { title: "Upload Report", url: "/reports/upload", icon: Upload },
-  { title: "Family Health", url: "/family", icon: Heart },
   { title: "Medications", url: "/medications", icon: Pill },
   { title: "Vitals & Trends", url: "/vitals", icon: Activity },
+  { title: "Family Profiles", url: "/family", icon: Users },
   { title: "Smart Insights", url: "/insights", icon: Brain },
 ];
 
 const settingsItems = [
   { title: "Settings", url: "/settings", icon: Settings },
-  { title: "Manage Family", url: "/manage-family", icon: Users },
 ];
 
 export function AppSidebar() {
@@ -59,7 +58,7 @@ export function AppSidebar() {
               <Stethoscope className="h-5 w-5 text-primary-foreground" />
             </div>
             {state === "expanded" && (
-              <span className="font-bold text-lg text-primary">Medisync</span>
+              <span className="font-bold text-lg text-primary">MediWiseHealth</span>
             )}
           </div>
         </div>
@@ -67,7 +66,7 @@ export function AppSidebar() {
         {/* Main Navigation */}
         <SidebarGroup className="p-4">
           <SidebarGroupLabel className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
-            {state === "expanded" && "Main"}
+            {state === "expanded" && "Main Menu"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
@@ -105,6 +104,21 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* User Profile Section */}
+        {state === "expanded" && (
+          <div className="p-4 border-t">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <User className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-sm">John Doe</div>
+                <div className="text-xs text-muted-foreground truncate">john@example.com</div>
+              </div>
+            </div>
+          </div>
+        )}
       </SidebarContent>
     </Sidebar>
   );

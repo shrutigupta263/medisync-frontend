@@ -1,183 +1,130 @@
 import React from 'react';
-import { Plus, FileText, Heart, Activity, Bell, Calendar } from 'lucide-react';
+import { Upload, FileText, Pill, Calendar, Activity, Clock, User } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { NavLink } from 'react-router-dom';
 
-const recentReports = [
-  { id: '1', title: 'Blood Test Results', date: '2024-01-15', type: 'Lab Report', status: 'Normal' },
-  { id: '2', title: 'Chest X-Ray', date: '2024-01-10', type: 'Imaging', status: 'Reviewed' },
-  { id: '3', title: 'Annual Checkup', date: '2024-01-05', type: 'Physical', status: 'Complete' },
-];
-
-const vitalsData = [
-  { label: 'Blood Pressure', value: '120/80', status: 'normal', trend: 'stable' },
-  { label: 'Heart Rate', value: '72 bpm', status: 'normal', trend: 'stable' },
-  { label: 'Weight', value: '165 lbs', status: 'normal', trend: 'down' },
-  { label: 'Temperature', value: '98.6°F', status: 'normal', trend: 'stable' },
-];
-
-const upcomingAppointments = [
-  { id: '1', title: 'Dr. Smith - Annual Physical', date: '2024-01-25', time: '10:00 AM' },
-  { id: '2', title: 'Dr. Johnson - Cardiology', date: '2024-02-01', time: '2:30 PM' },
+const reminderTasks = [
+  { id: '1', title: 'Take blood pressure medication', time: '8:00 AM', color: 'bg-blue-500' },
+  { id: '2', title: 'Record blood glucose level', time: '7:30 PM', color: 'bg-green-500' },
+  { id: '3', title: 'Dr. Smith appointment', time: 'May 15', color: 'bg-orange-500' },
 ];
 
 export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Health Dashboard</h1>
-          <p className="text-muted-foreground">Overview of your health data and recent activity</p>
-        </div>
-        <NavLink to="/reports/upload">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Upload Report
-          </Button>
-        </NavLink>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground">Welcome to your health dashboard. Here's your overview.</p>
       </div>
+
+      {/* Get Started Section */}
+      <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
+        <CardHeader>
+          <CardTitle className="text-blue-900">Get Started with Your Report</CardTitle>
+          <CardDescription className="text-blue-700">
+            Upload your medical report to receive AI-powered analysis, insights, and a detailed summary of your health metrics.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <NavLink to="/reports/upload">
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Upload className="mr-2 h-4 w-4" />
+              Upload Report
+            </Button>
+          </NavLink>
+        </CardContent>
+      </Card>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="border-blue-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Reports</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Recent Reports</CardTitle>
+            <FileText className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">24</div>
-            <p className="text-xs text-muted-foreground">+3 from last month</p>
+            <div className="text-2xl font-bold">3</div>
+            <p className="text-xs text-muted-foreground">+1 since last month</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-green-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Family Members</CardTitle>
-            <Heart className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Active Medications</CardTitle>
+            <Pill className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">4</div>
-            <p className="text-xs text-muted-foreground">Managed profiles</p>
+            <div className="text-2xl font-bold">7</div>
+            <p className="text-xs text-muted-foreground">2 need refill</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-orange-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Health Score</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Upcoming Appointments</CardTitle>
+            <Calendar className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success">92</div>
-            <p className="text-xs text-muted-foreground">Excellent condition</p>
+            <div className="text-2xl font-bold">2</div>
+            <p className="text-xs text-muted-foreground">Next: May 15, 2025</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-cyan-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Alerts</CardTitle>
-            <Bell className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Health Status</CardTitle>
+            <Activity className="h-4 w-4 text-cyan-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-warning">2</div>
-            <p className="text-xs text-muted-foreground">Require attention</p>
+            <div className="text-2xl font-bold text-green-600">Good</div>
+            <p className="text-xs text-muted-foreground">All vitals within range</p>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Reports */}
+        {/* Recent Activity */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Reports</CardTitle>
-            <CardDescription>Your latest medical reports and tests</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Recent Activity
+            </CardTitle>
+            <CardDescription>Your health activity from the past 7 days</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentReports.map((report) => (
-                <div key={report.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="space-y-1">
-                    <NavLink to={`/reports/${report.id}`} className="font-medium hover:text-primary">
-                      {report.title}
-                    </NavLink>
-                    <div className="text-sm text-muted-foreground">
-                      {report.type} • {report.date}
-                    </div>
-                  </div>
-                  <Badge variant="outline" className="text-success border-success">
-                    {report.status}
-                  </Badge>
-                </div>
-              ))}
-              <NavLink to="/reports">
-                <Button variant="outline" className="w-full">
-                  View All Reports
-                </Button>
-              </NavLink>
+            <div className="flex items-center justify-center h-40 text-muted-foreground">
+              <div className="text-center">
+                <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>Activity chart will appear here</p>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Current Vitals */}
+        {/* Reminders */}
         <Card>
           <CardHeader>
-            <CardTitle>Current Vitals</CardTitle>
-            <CardDescription>Your latest vital signs and measurements</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Reminders
+            </CardTitle>
+            <CardDescription>Upcoming tasks</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {vitalsData.map((vital, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="space-y-1">
-                    <div className="font-medium">{vital.label}</div>
-                    <div className="text-2xl font-bold">{vital.value}</div>
+            <div className="space-y-3">
+              {reminderTasks.map((task) => (
+                <div key={task.id} className="flex items-center gap-3 p-2">
+                  <div className={`w-2 h-2 rounded-full ${task.color}`}></div>
+                  <div className="flex-1">
+                    <div className="font-medium text-sm">{task.title}</div>
                   </div>
-                  <div className="text-right">
-                    <Badge variant="outline" className="text-success border-success">
-                      {vital.status}
-                    </Badge>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {vital.trend}
-                    </div>
-                  </div>
+                  <div className="text-sm text-muted-foreground">{task.time}</div>
                 </div>
               ))}
-              <NavLink to="/vitals">
-                <Button variant="outline" className="w-full">
-                  View Trends
-                </Button>
-              </NavLink>
             </div>
           </CardContent>
         </Card>
       </div>
-
-      {/* Upcoming Appointments */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Upcoming Appointments
-          </CardTitle>
-          <CardDescription>Your scheduled medical appointments</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {upcomingAppointments.map((appointment) => (
-              <div key={appointment.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="space-y-1">
-                  <div className="font-medium">{appointment.title}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {appointment.date} at {appointment.time}
-                  </div>
-                </div>
-                <Button variant="outline">
-                  View Details
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
