@@ -1,8 +1,9 @@
-import React from 'react';
-import { Upload, FileText, Pill, Calendar, Activity, Clock, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { Upload, FileText, Pill, Calendar, Activity, Clock, User, Zap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { NavLink } from 'react-router-dom';
+import { UploadReportDialog } from '@/components/UploadReportDialog';
 
 const reminderTasks = [
   { id: '1', title: 'Take blood pressure medication', time: '8:00 AM', color: 'bg-blue-500' },
@@ -11,12 +12,19 @@ const reminderTasks = [
 ];
 
 export default function Dashboard() {
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome to your health dashboard. Here's your overview.</p>
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+          <Zap className="h-7 w-7 text-white" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome to your MediSync health dashboard. Here's your overview.</p>
+        </div>
       </div>
 
       {/* Get Started Section */}
@@ -28,12 +36,13 @@ export default function Dashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <NavLink to="/reports/upload">
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Upload className="mr-2 h-4 w-4" />
-              Upload Report
-            </Button>
-          </NavLink>
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700"
+            onClick={() => setUploadDialogOpen(true)}
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            Upload Report
+          </Button>
         </CardContent>
       </Card>
 
@@ -125,6 +134,12 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Upload Report Dialog */}
+      <UploadReportDialog 
+        open={uploadDialogOpen} 
+        onOpenChange={setUploadDialogOpen} 
+      />
     </div>
   );
 }

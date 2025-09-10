@@ -1,0 +1,268 @@
+import React, { useState, useCallback, useRef } from 'react';
+import { Upload, FileText, CheckCircle, X, CloudUpload } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+
+interface UploadReportDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const steps = [
+  { id: 1, title: 'Upload', description: 'Upload your medical report' },
+  { id: 2, title: 'Analyzing', description: 'AI analysis in progress' },
+  { id: 3, title: 'Preview', description: 'Review extracted data' },
+];
+
+export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogProps) {
+  const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = useCallback((file: File) => {
+    if (file && (file.type === 'application/pdf' || file.type.startsWith('image/'))) {
+      setSelectedFile(file);
+      // Simulate moving to analyzing step
+      setTimeout(() => setCurrentStep(2), 500);
+      // Simulate analysis completion
+      setTimeout(() => setCurrentStep(3), 2500);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      handleFileSelect(files[0]);
+    }
+  }, [handleFileSelect]);
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleClose = () => {
+    setCurrentStep(1);
+    setSelectedFile(null);
+    setIsDragOver(false);
+    onOpenChange(false);
+  };
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            {/* Drag & Drop Area */}
+            <div
+              className={cn(
+                "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
+                isDragOver 
+                  ? "border-primary bg-primary/5" 
+                  : "border-gray-300 hover:border-gray-400"
+              )}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <div className="space-y-4">
+                <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                  <CloudUpload className="w-8 h-8 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Drag & drop your file here
+                  </h3>
+                  <p className="text-gray-500 mt-1">
+                    or choose from your device
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={handleBrowseClick}
+                  className="mt-4"
+                >
+                  Browse Files
+                </Button>
+                <p className="text-sm text-gray-400">
+                  Supported formats: PDF, JPG, PNG
+                </p>
+              </div>
+            </div>
+            
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="space-y-6 text-center">
+            <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Analyzing your report...
+              </h3>
+              <p className="text-gray-500 mt-1">
+                Our AI is extracting key information from your medical report
+              </p>
+            </div>
+            {selectedFile && (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <FileText className="w-5 h-5 text-gray-400" />
+                    <span className="text-sm font-medium text-gray-900">
+                      {selectedFile.name}
+                    </span>
+                  </div>
+                  <Badge variant="outline" className="text-blue-600 border-blue-600">
+                    Processing
+                  </Badge>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-6 text-center">
+            <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Analysis Complete!
+              </h3>
+              <p className="text-gray-500 mt-1">
+                Your report has been successfully processed and analyzed
+              </p>
+            </div>
+            {selectedFile && (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <FileText className="w-5 h-5 text-gray-400" />
+                    <span className="text-sm font-medium text-gray-900">
+                      {selectedFile.name}
+                    </span>
+                  </div>
+                  <Badge variant="outline" className="text-green-600 border-green-600">
+                    Complete
+                  </Badge>
+                </div>
+              </div>
+            )}
+            <div className="flex space-x-3 justify-center">
+              <Button variant="outline" onClick={handleClose}>
+                Close
+              </Button>
+              <Button onClick={() => {
+                handleClose();
+                navigate('/reports/summary');
+              }}>
+                View Report
+              </Button>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle>Upload Medical Report</DialogTitle>
+              <DialogDescription>
+                Upload your medical report to get AI-powered insights
+              </DialogDescription>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              className="h-6 w-6 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </DialogHeader>
+
+        {/* Step Indicator */}
+        <div className="flex items-center justify-center space-x-8 py-4">
+          {steps.map((step, index) => (
+            <div key={step.id} className="flex flex-col items-center">
+              <div className={cn(
+                "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
+                currentStep >= step.id
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-500"
+              )}>
+                {currentStep > step.id ? (
+                  <CheckCircle className="w-4 h-4" />
+                ) : (
+                  step.id
+                )}
+              </div>
+              <span className={cn(
+                "text-xs mt-1",
+                currentStep >= step.id ? "text-blue-600" : "text-gray-400"
+              )}>
+                {step.title}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Step Content */}
+        <div className="py-4">
+          {renderStepContent()}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

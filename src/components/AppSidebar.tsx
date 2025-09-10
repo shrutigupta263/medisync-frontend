@@ -10,7 +10,8 @@ import {
   Activity,
   Brain,
   Stethoscope,
-  User
+  User,
+  Zap
 } from "lucide-react";
 import {
   Sidebar,
@@ -54,11 +55,11 @@ export function AppSidebar() {
         {/* Logo Section */}
         <div className="p-4 border-b">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Stethoscope className="h-5 w-5 text-primary-foreground" />
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <Zap className="h-5 w-5 text-white" />
             </div>
             {state === "expanded" && (
-              <span className="font-bold text-lg text-primary">MediWiseHealth</span>
+              <span className="font-bold text-lg text-primary">MediSync</span>
             )}
           </div>
         </div>

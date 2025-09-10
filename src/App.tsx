@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
 import ReportStepper from "./pages/ReportStepper";
 import ReportById from "./pages/ReportById";
+import ReportSummary from "./pages/ReportSummary";
 import Settings from "./pages/Settings";
 import ManageProfiles from "./pages/ManageProfiles";
 import FamilyHealthDashboard from "./pages/FamilyHealthDashboard";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/reports" element={<Reports />} />
             <Route path="/reports/upload" element={<ReportStepper />} />
             <Route path="/reports/:id" element={<ReportById />} />
+            <Route path="/reports/summary" element={<ReportSummary />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/manage-family" element={<ManageProfiles />} />
             <Route path="/family" element={<FamilyHealthDashboard />} />
