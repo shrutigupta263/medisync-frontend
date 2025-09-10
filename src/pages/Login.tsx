@@ -36,7 +36,7 @@ export default function Login() {
               <Stethoscope className="h-7 w-7 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-primary">Welcome to Medisync</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Welcome to MediSync</CardTitle>
           <CardDescription>
             Sign in to access your health management platform
           </CardDescription>

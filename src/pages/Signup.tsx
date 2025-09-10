@@ -42,7 +42,7 @@ export default function Signup() {
               <Stethoscope className="h-7 w-7 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-primary">Join Medisync</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Join MediSync</CardTitle>
           <CardDescription>
             Create your account to start managing your health
           </CardDescription>

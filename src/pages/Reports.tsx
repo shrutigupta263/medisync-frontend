@@ -1,61 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { NavLink } from 'react-router-dom';
-import { Plus, Search, Filter, FileText, Calendar, User } from 'lucide-react';
+import { Plus, Search, Filter, FileText, Calendar, User, Eye, Download, Trash2, CheckCircle, AlertCircle, XCircle, Clock, Activity } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { UploadReportDialog } from '@/components/UploadReportDialog';
 
 // Mock data for reports
 const mockReports = [
   { 
     id: '1', 
-    title: 'Complete Blood Count (CBC)', 
-    date: '2024-01-15', 
+    title: 'Medical Report 1', 
+    date: 'Apr 24, 2025', 
+    time: '6:20 PM',
     type: 'Lab Report', 
-    status: 'Normal',
+    status: 'COMPLETED',
     doctor: 'Dr. Smith',
     facility: 'Central Medical Lab'
   },
   { 
     id: '2', 
-    title: 'Chest X-Ray', 
-    date: '2024-01-10', 
+    title: 'Medical Report 2', 
+    date: 'Apr 24, 2025', 
+    time: '6:20 PM',
     type: 'Imaging', 
-    status: 'Reviewed',
+    status: 'COMPLETED',
     doctor: 'Dr. Johnson',
     facility: 'City Hospital'
   },
-  { 
-    id: '3', 
-    title: 'Lipid Panel', 
-    date: '2024-01-05', 
-    type: 'Lab Report', 
-    status: 'Attention Required',
-    doctor: 'Dr. Wilson',
-    facility: 'Health Center'
-  },
-  { 
-    id: '4', 
-    title: 'Annual Physical Exam', 
-    date: '2024-01-01', 
-    type: 'Physical', 
-    status: 'Complete',
-    doctor: 'Dr. Smith',
-    facility: 'Family Clinic'
-  },
-  { 
-    id: '5', 
-    title: 'Echocardiogram', 
-    date: '2023-12-20', 
-    type: 'Imaging', 
-    status: 'Normal',
-    doctor: 'Dr. Brown',
-    facility: 'Cardiology Center'
-  },
 ];
+
+// Summary data
+const summaryData = {
+  completed: 2,
+  pending: 0,
+  failed: 0
+};
 
 // Simulate fetching reports with React Query
 const fetchReports = async () => {
@@ -65,6 +48,7 @@ const fetchReports = async () => {
 };
 
 export default function Reports() {
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const { data: reports = [], isLoading, error } = useQuery({
     queryKey: ['reports'],
     queryFn: fetchReports,
@@ -72,14 +56,14 @@ export default function Reports() {
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'normal':
-        return 'text-success border-success';
-      case 'attention required':
-        return 'text-warning border-warning';
-      case 'reviewed':
-        return 'text-primary border-primary';
+      case 'completed':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'failed':
+        return 'bg-red-100 text-red-800 border-red-200';
       default:
-        return 'text-muted-foreground border-muted';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -117,88 +101,118 @@ export default function Reports() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Medical Reports</h1>
-          <p className="text-muted-foreground">Manage and view all your medical reports</p>
+          <p className="text-muted-foreground">Access and manage your health records securely</p>
         </div>
-        <NavLink to="/reports/upload">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Upload Report
-          </Button>
-        </NavLink>
+        <Button 
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => setUploadDialogOpen(true)}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Upload Report
+        </Button>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-green-50 border-green-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-green-800">Completed</p>
+                <p className="text-2xl font-bold text-green-900">{summaryData.completed}</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-yellow-50 border-yellow-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-yellow-800">Pending</p>
+                <p className="text-2xl font-bold text-yellow-900">{summaryData.pending}</p>
+              </div>
+              <AlertCircle className="h-8 w-8 text-yellow-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-red-50 border-red-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-red-800">Failed</p>
+                <p className="text-2xl font-bold text-red-900">{summaryData.failed}</p>
+              </div>
+              <XCircle className="h-8 w-8 text-red-600" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search reports..." className="pl-10" />
-            </div>
-            <Select>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Filter by type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="lab">Lab Reports</SelectItem>
-                <SelectItem value="imaging">Imaging</SelectItem>
-                <SelectItem value="physical">Physical Exams</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="normal">Normal</SelectItem>
-                <SelectItem value="reviewed">Reviewed</SelectItem>
-                <SelectItem value="attention">Needs Attention</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col md:flex-row gap-4">
+        <Select>
+          <SelectTrigger className="w-full md:w-48">
+            <Calendar className="mr-2 h-4 w-4" />
+            <SelectValue placeholder="All Time" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Time</SelectItem>
+            <SelectItem value="today">Today</SelectItem>
+            <SelectItem value="week">This Week</SelectItem>
+            <SelectItem value="month">This Month</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select>
+          <SelectTrigger className="w-full md:w-48">
+            <Clock className="mr-2 h-4 w-4" />
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="completed">Completed</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="failed">Failed</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-      {/* Reports Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Reports List */}
+      <div className="space-y-4">
         {reports.map((report) => (
-          <Card key={report.id} className="hover:shadow-md transition-shadow cursor-pointer">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <FileText className="h-8 w-8 text-primary" />
-                <Badge variant="outline" className={getStatusColor(report.status)}>
-                  {report.status}
-                </Badge>
-              </div>
-              <CardTitle className="text-lg">
-                <NavLink to={`/reports/${report.id}`} className="hover:text-primary">
-                  {report.title}
-                </NavLink>
-              </CardTitle>
-              <CardDescription>{report.type}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {report.date}
+          <Card key={report.id} className="hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-lg font-semibold">{report.title}</h3>
+                    <Badge className={getStatusColor(report.status)}>
+                      {report.status}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span>{report.date}</span>
+                    <span>{report.time}</span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  {report.doctor}
-                </div>
-                <div className="text-xs">
-                  {report.facility}
-                </div>
-              </div>
-              <div className="mt-4 flex gap-2">
-                <NavLink to={`/reports/${report.id}`} className="flex-1">
-                  <Button variant="outline" className="w-full">
-                    View Details
+                  <NavLink to="/reports/summary">
+                    <Button variant="outline" size="sm">
+                      <Eye className="h-4 w-4 mr-1" />
+                      View
+                    </Button>
+                  </NavLink>
+                  <Button variant="outline" size="sm">
+                    <Download className="h-4 w-4 mr-1" />
+                    Download
                   </Button>
-                </NavLink>
+                  <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -213,15 +227,19 @@ export default function Reports() {
             <p className="text-muted-foreground mb-4">
               Upload your first medical report to get started
             </p>
-            <NavLink to="/reports/upload">
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Upload Report
-              </Button>
-            </NavLink>
+            <Button onClick={() => setUploadDialogOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Upload Report
+            </Button>
           </CardContent>
         </Card>
       )}
+
+      {/* Upload Report Dialog */}
+      <UploadReportDialog 
+        open={uploadDialogOpen} 
+        onOpenChange={setUploadDialogOpen} 
+      />
     </div>
   );
 }

@@ -47,26 +47,6 @@ const initialFamilyMembers: FamilyMember[] = [
     isOwner: false,
     medicalConditions: [],
     allergies: ['Shellfish']
-  },
-  {
-    id: '3',
-    firstName: 'Emma',
-    lastName: 'Doe',
-    relationship: 'Daughter',
-    dateOfBirth: '2015-08-10',
-    isOwner: false,
-    medicalConditions: ['Asthma'],
-    allergies: []
-  },
-  {
-    id: '4',
-    firstName: 'Michael',
-    lastName: 'Doe',
-    relationship: 'Son',
-    dateOfBirth: '2018-03-25',
-    isOwner: false,
-    medicalConditions: [],
-    allergies: ['Peanuts']
   }
 ];
 

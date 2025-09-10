@@ -42,30 +42,6 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/manage-family" element={<ManageProfiles />} />
             <Route path="/family" element={<FamilyHealthDashboard />} />
-            <Route
-              path="/medications"
-              element={
-                <div className="p-4">
-                  <h1 className="text-2xl font-bold">Medications</h1>
-                </div>
-              }
-            />
-            <Route
-              path="/vitals"
-              element={
-                <div className="p-4">
-                  <h1 className="text-2xl font-bold">Vitals & Trends</h1>
-                </div>
-              }
-            />
-            <Route
-              path="/insights"
-              element={
-                <div className="p-4">
-                  <h1 className="text-2xl font-bold">Smart Insights</h1>
-                </div>
-              }
-            />
           </Route>
 
           {/* Catch-all route */}

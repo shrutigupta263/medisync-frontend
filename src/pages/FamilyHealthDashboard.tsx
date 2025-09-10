@@ -68,40 +68,6 @@ const familyHealthData: FamilyMemberHealth[] = [
     upcomingAppointments: 1,
     recentReports: 2
   },
-  {
-    id: '3',
-    name: 'Emma Doe',
-    relationship: 'Daughter',
-    age: 9,
-    healthScore: 95,
-    lastCheckup: '2023-12-20',
-    vitals: {
-      heartRate: 85,
-      weight: 65,
-      temperature: 98.2
-    },
-    alerts: [],
-    upcomingAppointments: 1,
-    recentReports: 1
-  },
-  {
-    id: '4',
-    name: 'Michael Doe',
-    relationship: 'Son',
-    age: 6,
-    healthScore: 90,
-    lastCheckup: '2024-01-05',
-    vitals: {
-      heartRate: 90,
-      weight: 45,
-      temperature: 98.1
-    },
-    alerts: [
-      { type: 'medium', message: 'Vaccination due in 2 weeks' }
-    ],
-    upcomingAppointments: 1,
-    recentReports: 1
-  }
 ];
 
 export default function FamilyHealthDashboard() {
@@ -143,11 +109,6 @@ export default function FamilyHealthDashboard() {
             <Button variant="outline">
               <Users className="mr-2 h-4 w-4" />
               Manage Profiles
-            </Button>
-          </NavLink>
-          <NavLink to="/reports/upload">
-            <Button>
-              Add Health Data
             </Button>
           </NavLink>
         </div>
@@ -333,7 +294,7 @@ export default function FamilyHealthDashboard() {
             <div className="flex items-center gap-4 p-3 border rounded-lg">
               <div className="w-2 h-2 bg-warning rounded-full" />
               <div className="flex-1">
-                <p className="text-sm font-medium">Michael's vaccination reminder</p>
+                <p className="text-sm font-medium">Jane's annual checkup reminder</p>
                 <p className="text-xs text-muted-foreground">1 day ago</p>
               </div>
               <Badge variant="outline" className="text-warning border-warning">Due Soon</Badge>

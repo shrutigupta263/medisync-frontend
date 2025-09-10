@@ -17,14 +17,9 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-          <Zap className="h-7 w-7 text-white" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome to your MediSync health dashboard. Here's your overview.</p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground">Welcome to your MediSync health dashboard. Here's your overview.</p>
       </div>
 
       {/* Get Started Section */}
@@ -36,13 +31,15 @@ export default function Dashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button 
-            className="bg-blue-600 hover:bg-blue-700"
-            onClick={() => setUploadDialogOpen(true)}
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            Upload Report
-          </Button>
+          <div className="flex gap-3">
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => setUploadDialogOpen(true)}
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              Upload Report
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -140,6 +137,7 @@ export default function Dashboard() {
         open={uploadDialogOpen} 
         onOpenChange={setUploadDialogOpen} 
       />
+
     </div>
   );
 }

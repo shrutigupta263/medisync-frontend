@@ -314,7 +314,7 @@ export default function Settings() {
                 <div className="space-y-0.5">
                   <Label className="text-base">Anonymous Analytics</Label>
                   <p className="text-sm text-muted-foreground">
-                    Help improve Medisync with anonymous usage data
+                    Help improve MediSync with anonymous usage data
                   </p>
                 </div>
                 <Switch
