@@ -164,12 +164,7 @@ export default function ReportSummary() {
       {/* Health Overview - Horizontal Layout */}
       <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-blue-900">Health Overview</CardTitle>
-            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
-              Show All
-            </Button>
-          </div>
+          <CardTitle className="text-blue-900">Health Overview</CardTitle>
           <CardDescription className="text-blue-700">All Health Categories</CardDescription>
         </CardHeader>
         <CardContent>
