@@ -14,7 +14,7 @@ const mockReports = [
   { 
     id: '1', 
     title: 'Medical Report 1', 
-    date: 'Apr 24, 2025', 
+    date: 'Aug 25, 2025', 
     time: '6:20 PM',
     type: 'Lab Report', 
     status: 'COMPLETED',
@@ -24,7 +24,7 @@ const mockReports = [
   { 
     id: '2', 
     title: 'Medical Report 2', 
-    date: 'Apr 24, 2025', 
+    date: 'Aug 25, 2025', 
     time: '6:20 PM',
     type: 'Imaging', 
     status: 'COMPLETED',
