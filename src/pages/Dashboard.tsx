@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, FileText, Pill, Calendar, Activity, Clock, User, Zap, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
+import { Upload, FileText, Activity, Clock, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { NavLink } from 'react-router-dom';

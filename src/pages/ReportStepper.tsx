@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, FileText, CheckCircle, ArrowLeft, ArrowRight, Code, Eye, EyeOff } from 'lucide-react';
+import { Upload, FileText, CheckCircle, ArrowLeft, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,9 +41,6 @@ export default function ReportStepper() {
       
       if (data) {
         setMedicalReportData(data);
-        console.log('Medical report data loaded successfully');
-      } else {
-        console.log('Failed to load medical report data');
       }
     };
 

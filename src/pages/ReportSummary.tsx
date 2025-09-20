@@ -17,9 +17,6 @@ export default function ReportSummary() {
       const data = await loadMedicalReportData('/medical-report-response.json');
       if (data) {
         setMedicalReportData(data);
-        console.log('Medical report data loaded successfully');
-      } else {
-        console.log('Failed to load medical report data');
       }
     };
 

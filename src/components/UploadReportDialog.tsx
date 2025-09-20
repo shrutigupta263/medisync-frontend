@@ -249,9 +249,8 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
                     if (selectedFile.name.includes('Yash') || selectedFile.name.includes('Medical')) {
                       try {
                         medicalAnalysisData = await loadMedicalReportData('/medical-report-response.json');
-                        console.log('Loaded medical analysis data:', medicalAnalysisData);
                       } catch (error) {
-                        console.warn('Could not load medical analysis data:', error);
+                        // Silently handle error - analysis data is optional
                       }
                     }
                     

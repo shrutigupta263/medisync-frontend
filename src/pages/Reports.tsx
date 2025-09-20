@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Plus, Search, Filter, FileText, Calendar, User, Eye, Download, Trash2, CheckCircle, AlertCircle, XCircle, Clock, Activity } from 'lucide-react';
+import { Plus, Search, Filter, FileText, Calendar, Eye, Download, Trash2, CheckCircle, AlertCircle, XCircle, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { UploadReportDialog } from '@/components/UploadReportDialog';
 import { useUserReports, useDeleteReport } from '@/hooks/use-user-data';
 import { useAuth } from '@/contexts/AuthContext';
+import { getStatusColor } from '@/lib/report-utils';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { EmptyState } from '@/components/ui/empty-state';
 
 // Summary data will be calculated from user reports
 
@@ -31,30 +34,16 @@ export default function Reports() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'completed':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'failed':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Medical Reports</h1>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-48 bg-muted rounded-lg animate-pulse" />
-          ))}
-        </div>
+        <LoadingSpinner 
+          message="Loading Reports..." 
+          description="Please wait while we fetch your medical reports."
+        />
       </div>
     );
   }
@@ -159,19 +148,14 @@ export default function Reports() {
       {/* Reports List */}
       <div className="space-y-4">
         {reports.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Reports Yet</h3>
-              <p className="text-muted-foreground text-center mb-4">
-                Upload your first medical report to get started with AI-powered health insights.
-              </p>
-              <Button onClick={() => setUploadDialogOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Upload Report
-              </Button>
-            </CardContent>
-          </Card>
+          <EmptyState
+            title="No Reports Yet"
+            description="Upload your first medical report to get started with AI-powered health insights."
+            action={{
+              label: "Upload Report",
+              onClick: () => setUploadDialogOpen(true)
+            }}
+          />
         ) : (
           reports.map((report) => (
             <Card key={report.id} className="hover:shadow-md transition-shadow">
