@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { User, Bell, Shield, Smartphone, Mail, Lock, Globe } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Bell, Shield, Smartphone, Mail, Lock, Globe, Save, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,17 +8,40 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { getUserDisplayName, getUserInitials } from '@/lib/user-utils';
 
 export default function Settings() {
+  const { user, updateUser } = useAuth();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
+    firstName: '',
+    lastName: '',
+    fullName: '',
+    email: '',
     phone: '+1 (555) 123-4567',
     dateOfBirth: '1990-01-15',
     language: 'en',
     timezone: 'America/New_York',
   });
+
+  // Initialize profile data from user
+  useEffect(() => {
+    if (user) {
+      const fullName = getUserDisplayName(user);
+      const nameParts = fullName.split(' ');
+      
+      setProfile(prev => ({
+        ...prev,
+        firstName: user.user_metadata?.firstName || nameParts[0] || '',
+        lastName: user.user_metadata?.lastName || nameParts.slice(1).join(' ') || '',
+        fullName: fullName,
+        email: user.email || '',
+      }));
+    }
+  }, [user]);
 
   const [notifications, setNotifications] = useState({
     emailReports: true,
@@ -38,6 +61,44 @@ export default function Settings() {
 
   const handleProfileChange = (field: string, value: string) => {
     setProfile(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    
+    try {
+      const fullName = `${profile.firstName} ${profile.lastName}`.trim();
+      
+      const { user: updatedUser, error } = await updateUser({
+        name: fullName
+      });
+      
+      if (error) {
+        toast({
+          title: "Update Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Profile Updated",
+          description: "Your profile information has been updated successfully.",
+        });
+        
+        // Update local state
+        setProfile(prev => ({ ...prev, fullName }));
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNotificationChange = (field: string, value: boolean) => {
@@ -70,7 +131,7 @@ export default function Settings() {
             <Avatar className="h-20 w-20">
               <AvatarImage src="" />
               <AvatarFallback className="text-lg">
-                {profile.firstName[0]}{profile.lastName[0]}
+                {getUserInitials(user)}
               </AvatarFallback>
             </Avatar>
             <div className="space-y-2">
@@ -104,8 +165,12 @@ export default function Settings() {
                 id="email"
                 type="email"
                 value={profile.email}
-                onChange={(e) => handleProfileChange('email', e.target.value)}
+                disabled
+                className="bg-muted"
               />
+              <p className="text-xs text-muted-foreground">
+                Email cannot be changed. Contact support if needed.
+              </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone</Label>
@@ -140,7 +205,19 @@ export default function Settings() {
             </div>
           </div>
 
-          <Button>Save Profile Changes</Button>
+          <Button onClick={handleSaveProfile} disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                Save Profile Changes
+              </>
+            )}
+          </Button>
         </CardContent>
       </Card>
 

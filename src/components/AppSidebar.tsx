@@ -9,6 +9,8 @@ import {
   User,
   Zap
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { getUserDisplayName, getUserInitials } from "@/lib/user-utils";
 import {
   Sidebar,
   SidebarContent,
@@ -32,6 +34,7 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
+  const { user } = useAuth();
 
   const isActive = (path: string) => currentPath === path;
   const getNavClass = ({ isActive }: { isActive: boolean }) =>
@@ -81,11 +84,15 @@ export function AppSidebar() {
           <div className="p-4 border-t mt-auto">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <User className="h-5 w-5 text-white" />
+                <span className="text-white font-medium text-sm">
+                  {getUserInitials(user)}
+                </span>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm">Yash Gupta</div>
-                <div className="text-xs text-muted-foreground truncate">yash@gmail.com</div>
+                <div className="font-medium text-sm">{getUserDisplayName(user)}</div>
+                <div className="text-xs text-muted-foreground truncate">
+                  {user?.email || 'No email'}
+                </div>
               </div>
             </div>
           </div>

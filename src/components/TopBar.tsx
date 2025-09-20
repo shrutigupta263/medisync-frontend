@@ -12,12 +12,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { getUserDisplayName, getUserInitials } from "@/lib/user-utils";
 
 export function TopBar() {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleMenuClick = (action: string) => {
+  const handleMenuClick = async (action: string) => {
     setDropdownOpen(false); // Close dropdown when navigating
     switch (action) {
       case 'profile':
@@ -36,10 +41,29 @@ export function TopBar() {
         navigate('/settings');
         break;
       case 'logout':
-        // Handle logout - clear any stored auth data and redirect to login
-        localStorage.removeItem('authToken');
-        sessionStorage.clear();
-        navigate('/login');
+        // Handle logout using Supabase auth
+        try {
+          const { error } = await signOut();
+          if (error) {
+            toast({
+              title: "Logout Failed",
+              description: error.message,
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Logged Out",
+              description: "You have been successfully logged out.",
+            });
+            navigate('/login');
+          }
+        } catch (error) {
+          toast({
+            title: "Error",
+            description: "An unexpected error occurred during logout.",
+            variant: "destructive",
+          });
+        }
         break;
       default:
         break;
@@ -79,7 +103,7 @@ export function TopBar() {
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  YG
+                  {getUserInitials(user)}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -159,12 +183,16 @@ export function TopBar() {
               <div className="flex items-center gap-3">
                 <Avatar className="h-12 w-12">
                   <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-medium">
-                    YG
+                    {getUserInitials(user)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm text-foreground">Yash Gupta</div>
-                  <div className="text-xs text-muted-foreground truncate">yash@gmail.com</div>
+                  <div className="font-semibold text-sm text-foreground">
+                    {getUserDisplayName(user)}
+                  </div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    {user?.email || 'No email'}
+                  </div>
                 </div>
               </div>
             </div>

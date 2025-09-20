@@ -17,38 +17,44 @@ import ReportSummary from "./pages/ReportSummary";
 import Settings from "./pages/Settings";
 import ManageProfiles from "./pages/ManageProfiles";
 import FamilyHealthDashboard from "./pages/FamilyHealthDashboard";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { SupabaseConfigNotice } from "./components/SupabaseConfigNotice";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+    <AuthProvider>
+      <TooltipProvider>
+        <SupabaseConfigNotice />
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Application Routes - All inside AppShell */}
-          <Route element={<AppShell />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/reports/upload" element={<ReportStepper />} />
-            <Route path="/reports/:id" element={<ReportById />} />
-            <Route path="/reports/summary" element={<ReportSummary />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/manage-family" element={<ManageProfiles />} />
-            <Route path="/family" element={<FamilyHealthDashboard />} />
-          </Route>
+            {/* Protected Application Routes - All inside AppShell */}
+            <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/reports/upload" element={<ReportStepper />} />
+              <Route path="/reports/:id" element={<ReportById />} />
+              <Route path="/reports/summary" element={<ReportSummary />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/manage-family" element={<ManageProfiles />} />
+              <Route path="/family" element={<FamilyHealthDashboard />} />
+            </Route>
 
-          {/* Catch-all route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+            {/* Catch-all route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

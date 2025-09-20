@@ -6,11 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { signUp } = useAuth();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -20,10 +25,61 @@ export default function Signup() {
     acceptTerms: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate signup - redirect to dashboard
-    navigate('/');
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "Passwords do not match. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast({
+        title: "Password Too Short",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { user, error } = await signUp(
+        formData.email, 
+        formData.password,
+        {
+          firstName: formData.firstName,
+          lastName: formData.lastName
+        }
+      );
+      
+      if (error) {
+        toast({
+          title: "Signup Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else if (user) {
+        toast({
+          title: "Account Created!",
+          description: "Please check your email to confirm your account.",
+        });
+        navigate('/login');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,8 +204,8 @@ export default function Signup() {
                 </a>
               </Label>
             </div>
-            <Button type="submit" className="w-full" disabled={!formData.acceptTerms}>
-              Create Account
+            <Button type="submit" className="w-full" disabled={!formData.acceptTerms || loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
         </CardContent>
