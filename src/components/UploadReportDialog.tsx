@@ -11,6 +11,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCreateReport } from '@/hooks/use-user-data';
+import { useToast } from '@/hooks/use-toast';
+import { loadMedicalReportData } from '@/utils/swagger-loader';
 
 interface UploadReportDialogProps {
   open: boolean;
@@ -25,10 +29,14 @@ const steps = [
 
 export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const createReport = useCreateReport();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = useCallback((file: File) => {
@@ -36,29 +44,26 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
     setErrorMessage(null);
     
     if (file) {
-      // Check if the file is an image
-      if (file.type.startsWith('image/')) {
-        setErrorMessage("Wrong content. Please upload a valid report file.");
+      // Check file type - allow PDF and common image formats
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMessage("Please upload a PDF, JPEG, or PNG file.");
         return;
       }
       
-      // Check if the file is a PDF
-      if (file.type === 'application/pdf') {
-        // Check if the filename is exactly "Yash-Medical-Report-2024.pdf"
-        if (file.name !== "Yash-Medical-Report-2024.pdf") {
-          setErrorMessage("Invalid file. Only Medical-Report is accepted.");
-          return;
-        }
-        
-        // File is valid - proceed with normal flow
-        setSelectedFile(file);
-        // Simulate moving to analyzing step
-        setTimeout(() => setCurrentStep(2), 500);
-        // Simulate analysis completion
-        setTimeout(() => setCurrentStep(3), 2500);
-      } else {
-        setErrorMessage("Wrong content. Please upload a valid report file.");
+      // Check file size (max 10MB)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        setErrorMessage("File size must be less than 10MB.");
+        return;
       }
+      
+      // File is valid - proceed with normal flow
+      setSelectedFile(file);
+      // Simulate moving to analyzing step
+      setTimeout(() => setCurrentStep(2), 500);
+      // Simulate analysis completion
+      setTimeout(() => setCurrentStep(3), 2500);
     }
   }, []);
 
@@ -138,7 +143,7 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
                   Browse Files
                 </Button>
                 <p className="text-sm text-gray-400">
-                  Supported formats: PDF
+                  Supported formats: PDF, JPEG, PNG (max 10MB)
                 </p>
               </div>
             </div>
@@ -231,11 +236,60 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
               <Button variant="outline" onClick={handleClose}>
                 Close
               </Button>
-              <Button onClick={() => {
-                handleClose();
-                navigate('/reports/summary');
-              }}>
-                View Report
+              <Button 
+                onClick={async () => {
+                  if (!selectedFile || !user) return;
+                  
+                  setIsUploading(true);
+                  try {
+                    // Load the Yash medical analysis data
+                    let medicalAnalysisData = null;
+                    
+                    // Check if this is the Yash report and load the analysis
+                    if (selectedFile.name.includes('Yash') || selectedFile.name.includes('Medical')) {
+                      try {
+                        medicalAnalysisData = await loadMedicalReportData('/medical-report-response.json');
+                        console.log('Loaded medical analysis data:', medicalAnalysisData);
+                      } catch (error) {
+                        console.warn('Could not load medical analysis data:', error);
+                      }
+                    }
+                    
+                    // Create report record in database
+                    const reportData = {
+                      title: selectedFile.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+                      type: selectedFile.type.includes('pdf') ? 'PDF' : 'Image',
+                      date: new Date().toISOString(),
+                      file_url: URL.createObjectURL(selectedFile), // In real app, this would be uploaded to storage
+                      status: 'COMPLETED' as const,
+                      medical_data: medicalAnalysisData, // Include the loaded analysis data
+                      doctor: medicalAnalysisData ? 'Dr. Smith' : undefined,
+                      facility: medicalAnalysisData ? 'Central Medical Lab' : undefined,
+                    };
+                    
+                    const newReport = await createReport.mutateAsync(reportData);
+                    
+                    if (newReport) {
+                      handleClose();
+                      navigate(`/reports/${newReport.id}`);
+                    }
+                  } catch (error) {
+                    toast({
+                      title: "Upload Failed",
+                      description: "Failed to save your report. Please try again.",
+                      variant: "destructive",
+                    });
+                  } finally {
+                    setIsUploading(false);
+                  }
+                }}
+                disabled={isUploading || createReport.isPending}
+              >
+                {isUploading || createReport.isPending ? (
+                  <>Saving...</>
+                ) : (
+                  <>View Report</>
+                )}
               </Button>
             </div>
           </div>

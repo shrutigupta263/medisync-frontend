@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { NavLink } from 'react-router-dom';
 import { Plus, Search, Filter, FileText, Calendar, User, Eye, Download, Trash2, CheckCircle, AlertCircle, XCircle, Clock, Activity } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,51 +7,29 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UploadReportDialog } from '@/components/UploadReportDialog';
+import { useUserReports, useDeleteReport } from '@/hooks/use-user-data';
+import { useAuth } from '@/contexts/AuthContext';
 
-// Mock data for reports
-const mockReports = [
-  { 
-    id: '1', 
-    title: 'Medical Report 1', 
-    date: 'Aug 25, 2025', 
-    time: '6:20 PM',
-    type: 'Lab Report', 
-    status: 'COMPLETED',
-    doctor: 'Dr. Smith',
-    facility: 'Central Medical Lab'
-  },
-  { 
-    id: '2', 
-    title: 'Medical Report 2', 
-    date: 'Aug 25, 2025', 
-    time: '6:20 PM',
-    type: 'Imaging', 
-    status: 'COMPLETED',
-    doctor: 'Dr. Johnson',
-    facility: 'City Hospital'
-  },
-];
-
-// Summary data
-const summaryData = {
-  completed: 2,
-  pending: 0,
-  failed: 0
-};
-
-// Simulate fetching reports with React Query
-const fetchReports = async () => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  return mockReports;
-};
+// Summary data will be calculated from user reports
 
 export default function Reports() {
+  const { user } = useAuth();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const { data: reports = [], isLoading, error } = useQuery({
-    queryKey: ['reports'],
-    queryFn: fetchReports,
-  });
+  const { data: reports = [], isLoading, error } = useUserReports();
+  const deleteReport = useDeleteReport();
+
+  // Calculate summary data from user reports
+  const summaryData = {
+    completed: reports.filter(r => r.status === 'COMPLETED').length,
+    pending: reports.filter(r => r.status === 'PENDING' || r.status === 'PROCESSING').length,
+    failed: reports.filter(r => r.status === 'FAILED').length,
+  };
+
+  const handleDeleteReport = async (reportId: string) => {
+    if (window.confirm('Are you sure you want to delete this report?')) {
+      await deleteReport.mutateAsync(reportId);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -181,59 +158,71 @@ export default function Reports() {
 
       {/* Reports List */}
       <div className="space-y-4">
-        {reports.map((report) => (
-          <Card key={report.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold">{report.title}</h3>
-                    <Badge className={getStatusColor(report.status)}>
-                      {report.status}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>{report.date}</span>
-                    <span>{report.time}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <NavLink to="/reports/summary">
-                    <Button variant="outline" size="sm">
-                      <Eye className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
-                  </NavLink>
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-1" />
-                    Download
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
-                  </Button>
-                </div>
-              </div>
+        {reports.length === 0 ? (
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Reports Yet</h3>
+              <p className="text-muted-foreground text-center mb-4">
+                Upload your first medical report to get started with AI-powered health insights.
+              </p>
+              <Button onClick={() => setUploadDialogOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Upload Report
+              </Button>
             </CardContent>
           </Card>
-        ))}
+        ) : (
+          reports.map((report) => (
+            <Card key={report.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-lg font-semibold">{report.title}</h3>
+                      <Badge className={getStatusColor(report.status)}>
+                        {report.status}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <span>{new Date(report.date).toLocaleDateString()}</span>
+                      {report.doctor && <span>Dr. {report.doctor}</span>}
+                      {report.facility && <span>{report.facility}</span>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <NavLink to={`/reports/${report.id}`}>
+                      <Button variant="outline" size="sm">
+                        <Eye className="h-4 w-4 mr-1" />
+                        View
+                      </Button>
+                    </NavLink>
+                    {report.file_url && (
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={report.file_url} download>
+                          <Download className="h-4 w-4 mr-1" />
+                          Download
+                        </a>
+                      </Button>
+                    )}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="text-red-600 hover:text-red-700"
+                      onClick={() => handleDeleteReport(report.id)}
+                      disabled={deleteReport.isPending}
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
 
-      {reports.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center h-48 text-center">
-            <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">No Reports Found</h3>
-            <p className="text-muted-foreground mb-4">
-              Upload your first medical report to get started
-            </p>
-            <Button onClick={() => setUploadDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Upload Report
-            </Button>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Upload Report Dialog */}
       <UploadReportDialog 

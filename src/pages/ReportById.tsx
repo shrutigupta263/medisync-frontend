@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useUserReport } from '@/hooks/use-user-data';
+import { extractMedicalReportInfo } from '@/utils/swagger-loader';
 
 // Mock report data
 const mockReportData = {
@@ -54,10 +56,34 @@ const mockReportData = {
 export default function ReportById() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { data: report, isLoading, error } = useUserReport(id || '');
   
-  const report = id ? mockReportData[id as keyof typeof mockReportData] : null;
+  // Extract medical analysis if available
+  const medicalInfo = report?.medical_data ? extractMedicalReportInfo(report.medical_data) : null;
 
-  if (!report) {
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => navigate('/reports')}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Reports
+          </Button>
+        </div>
+        <Card>
+          <CardContent className="flex items-center justify-center h-48">
+            <div className="text-center">
+              <Activity className="mx-auto h-12 w-12 text-muted-foreground mb-4 animate-spin" />
+              <p className="text-lg font-medium mb-2">Loading Report...</p>
+              <p className="text-muted-foreground">Please wait while we load your report details.</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error || !report) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
@@ -71,7 +97,7 @@ export default function ReportById() {
             <div className="text-center">
               <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium mb-2">Report Not Found</p>
-              <p className="text-muted-foreground">The requested report could not be found.</p>
+              <p className="text-muted-foreground">The requested report could not be found or you don't have access to it.</p>
             </div>
           </CardContent>
         </Card>
@@ -141,6 +167,14 @@ export default function ReportById() {
                 </Badge>
               </div>
               <p className="text-muted-foreground">{report.type}</p>
+              {medicalInfo && (
+                <div className="mt-2">
+                  <Badge variant="outline" className="text-blue-600 border-blue-200">
+                    <Activity className="mr-1 h-3 w-3" />
+                    AI Analysis Available
+                  </Badge>
+                </div>
+              )}
             </div>
             <div className="text-right text-sm text-muted-foreground">
               Report ID: {report.id}
@@ -266,6 +300,82 @@ export default function ReportById() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Medical Analysis Section */}
+        {medicalInfo && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                AI Medical Analysis
+              </CardTitle>
+              <CardDescription>Comprehensive analysis of your medical report</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Summary */}
+              {medicalInfo.summary && medicalInfo.summary.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Summary</h4>
+                  <div className="space-y-2">
+                    {medicalInfo.summary.map((item, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2" />
+                        <p className="text-sm text-muted-foreground">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Test Results */}
+              {medicalInfo.testResults && medicalInfo.testResults.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Test Results</h4>
+                  <div className="space-y-3">
+                    {medicalInfo.testResults.map((test, index) => (
+                      <div key={index} className="border rounded-lg p-3">
+                        <div className="flex justify-between items-start mb-2">
+                          <h5 className="font-medium">{test.name}</h5>
+                          <Badge 
+                            variant={test.status === 'Normal' ? 'default' : 'destructive'}
+                            className="text-xs"
+                          >
+                            {test.status}
+                          </Badge>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div>
+                            <span className="text-muted-foreground">Value: </span>
+                            <span className="font-medium">{test.value} {test.unit}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Range: </span>
+                            <span>{test.range}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Recommendations */}
+              {medicalInfo.recommendations && medicalInfo.recommendations.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Recommendations</h4>
+                  <div className="space-y-2">
+                    {medicalInfo.recommendations.map((rec, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
+                        <p className="text-sm">{rec}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}

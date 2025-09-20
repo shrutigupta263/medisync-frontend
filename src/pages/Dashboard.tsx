@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
-import { Upload, FileText, Pill, Calendar, Activity, Clock, User, Zap } from 'lucide-react';
+import { Upload, FileText, Pill, Calendar, Activity, Clock, User, Zap, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { NavLink } from 'react-router-dom';
 import { UploadReportDialog } from '@/components/UploadReportDialog';
-
-const reminderTasks = [
-  { id: '1', title: 'Take blood pressure medication', time: '8:00 AM', color: 'bg-blue-500' },
-  { id: '2', title: 'Record blood glucose level', time: '7:30 PM', color: 'bg-green-500' },
-  { id: '3', title: 'Dr. Smith appointment', time: 'May 15', color: 'bg-orange-500' },
-];
+import { useUserDashboardStats, useUserReminders } from '@/hooks/use-user-data';
+import { useAuth } from '@/contexts/AuthContext';
+import { getUserDisplayName } from '@/lib/user-utils';
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const { data: dashboardStats, isLoading: statsLoading } = useUserDashboardStats();
+  const { data: reminders = [], isLoading: remindersLoading } = useUserReminders();
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome to your MediSync health dashboard. Here's your overview.</p>
+        <p className="text-muted-foreground">
+          Welcome back, {getUserDisplayName(user)}! Here's your health overview.
+        </p>
       </div>
 
       {/* Get Started Section */}
@@ -47,42 +49,52 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-blue-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recent Reports</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Reports</CardTitle>
             <FileText className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3</div>
-            <p className="text-xs text-muted-foreground">+1 since last month</p>
+            <div className="text-2xl font-bold">
+              {statsLoading ? '...' : dashboardStats?.total_reports || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {dashboardStats?.completed_reports || 0} completed
+            </p>
           </CardContent>
         </Card>
         <Card className="border-green-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Medications</CardTitle>
-            <Pill className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium">Completed</CardTitle>
+            <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">7</div>
-            <p className="text-xs text-muted-foreground">2 need refill</p>
+            <div className="text-2xl font-bold text-green-600">
+              {statsLoading ? '...' : dashboardStats?.completed_reports || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">Ready for review</p>
           </CardContent>
         </Card>
         <Card className="border-orange-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Upcoming Appointments</CardTitle>
-            <Calendar className="h-4 w-4 text-orange-600" />
+            <CardTitle className="text-sm font-medium">Pending</CardTitle>
+            <AlertCircle className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">2</div>
-            <p className="text-xs text-muted-foreground">Next: May 15, 2025</p>
+            <div className="text-2xl font-bold text-orange-600">
+              {statsLoading ? '...' : dashboardStats?.pending_reports || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">Processing</p>
           </CardContent>
         </Card>
-        <Card className="border-cyan-200">
+        <Card className="border-red-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Health Status</CardTitle>
-            <Activity className="h-4 w-4 text-cyan-600" />
+            <CardTitle className="text-sm font-medium">Failed</CardTitle>
+            <XCircle className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">Good</div>
-            <p className="text-xs text-muted-foreground">All vitals within range</p>
+            <div className="text-2xl font-bold text-red-600">
+              {statsLoading ? '...' : dashboardStats?.failed_reports || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">Need attention</p>
           </CardContent>
         </Card>
       </div>
@@ -118,15 +130,25 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {reminderTasks.map((task) => (
-                <div key={task.id} className="flex items-center gap-3 p-2">
-                  <div className={`w-2 h-2 rounded-full ${task.color}`}></div>
-                  <div className="flex-1">
-                    <div className="font-medium text-sm">{task.title}</div>
-                  </div>
-                  <div className="text-sm text-muted-foreground">{task.time}</div>
+              {remindersLoading ? (
+                <div className="text-center text-muted-foreground py-4">
+                  Loading reminders...
                 </div>
-              ))}
+              ) : reminders.length === 0 ? (
+                <div className="text-center text-muted-foreground py-4">
+                  No reminders yet. Add some to stay on top of your health!
+                </div>
+              ) : (
+                reminders.map((reminder) => (
+                  <div key={reminder.id} className="flex items-center gap-3 p-2">
+                    <div className={`w-2 h-2 rounded-full ${reminder.color}`}></div>
+                    <div className="flex-1">
+                      <div className="font-medium text-sm">{reminder.title}</div>
+                    </div>
+                    <div className="text-sm text-muted-foreground">{reminder.time}</div>
+                  </div>
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
