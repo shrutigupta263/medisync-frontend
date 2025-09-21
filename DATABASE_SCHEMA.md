@@ -20,8 +20,9 @@ CREATE TABLE user_reports (
   facility TEXT,
   notes TEXT,
   file_url TEXT,
+  extracted_text TEXT, -- Raw text extracted from file
   status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED')),
-  medical_data JSONB, -- AI analysis results
+  medical_data JSONB, -- AI analysis results with structured data
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

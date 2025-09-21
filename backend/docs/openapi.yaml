@@ -1,0 +1,497 @@
+openapi: 3.0.3
+info:
+  title: MediSync Report Analysis API
+  description: |
+    Medical Report Analysis API using Google Gemini AI for decision-support analysis.
+    
+    This API provides detailed medical report analysis with patient-friendly explanations.
+    It acts as a decision-support tool, NOT a prescriber. All analysis includes safety
+    disclaimers and redacts specific dosing information.
+    
+    ## Safety Features
+    - Automatic redaction of dosing patterns
+    - Safety validation on all responses
+    - Rate limiting to prevent abuse
+    - Comprehensive input validation
+    - Medical disclaimers in all responses
+    
+    ## AI Model
+    - **Model**: Google Gemini 1.5 Flash
+    - **Cost**: FREE
+    - **Processing Time**: 10-30 seconds
+    - **Context Length**: 1M tokens
+  version: 1.0.0
+  contact:
+    name: MediSync Team
+    email: support@medisync.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3001
+    description: Development server
+  - url: https://api.medisync.com
+    description: Production server
+
+paths:
+  /api/report-analysis/analyze:
+    post:
+      tags:
+        - Report Analysis
+      summary: Analyze medical report
+      description: |
+        Performs comprehensive AI-powered analysis of medical reports using Google Gemini.
+        Returns detailed analysis including abnormal findings, specialist recommendations,
+        lifestyle advice, and general treatment approaches.
+        
+        **Safety Features:**
+        - Redacts specific dosing information
+        - Validates response safety
+        - Includes medical disclaimers
+        - Rate limited to 10 requests per 15 minutes
+      operationId: analyzeReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportAnalysisRequest'
+            example:
+              patientInfo:
+                age: 45
+                gender: male
+                weight: 75
+                height: 175
+                medicalHistory: ["Hypertension", "Type 2 Diabetes"]
+                currentMedications: ["Metformin 500mg", "Lisinopril 10mg"]
+              reportText: "COMPREHENSIVE METABOLIC PANEL\n\nGlucose: 145 mg/dL (High) [Ref: 70-100]\nSodium: 134 mmol/L (Low) [Ref: 136-145]\n..."
+              parameters:
+                - name: Glucose
+                  value: "145"
+                  unit: "mg/dL"
+                  refRange: "70-100"
+                  status: HIGH
+                  group: Metabolic
+      responses:
+        '200':
+          description: Analysis completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: AI service error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/report-analysis/status:
+    get:
+      tags:
+        - Report Analysis
+      summary: Get analysis service status
+      description: Returns the current status and capabilities of the analysis service
+      operationId: getAnalysisStatus
+      responses:
+        '200':
+          description: Service status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Returns the health status of the API
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-01-15T10:30:00Z"
+
+components:
+  schemas:
+    ReportAnalysisRequest:
+      type: object
+      required:
+        - patientInfo
+        - reportText
+        - parameters
+      properties:
+        patientInfo:
+          $ref: '#/components/schemas/PatientInfo'
+        reportText:
+          type: string
+          description: Medical report text content
+          minLength: 10
+          maxLength: 50000
+          example: "COMPREHENSIVE METABOLIC PANEL\n\nGlucose: 145 mg/dL (High)..."
+        parameters:
+          type: array
+          description: Laboratory parameters and values
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/Parameter'
+
+    PatientInfo:
+      type: object
+      properties:
+        age:
+          type: integer
+          minimum: 0
+          maximum: 150
+          description: Patient age in years
+        gender:
+          type: string
+          enum: [male, female, other]
+          description: Patient gender
+        weight:
+          type: number
+          minimum: 0
+          maximum: 1000
+          description: Patient weight in kg
+        height:
+          type: number
+          minimum: 0
+          maximum: 300
+          description: Patient height in cm
+        medicalHistory:
+          type: array
+          items:
+            type: string
+          description: Previous medical conditions
+        currentMedications:
+          type: array
+          items:
+            type: string
+          description: Current medications (names only, no dosing)
+
+    Parameter:
+      type: object
+      required:
+        - name
+        - value
+        - unit
+        - refRange
+        - status
+        - group
+      properties:
+        name:
+          type: string
+          description: Parameter name
+          example: "Glucose"
+        value:
+          oneOf:
+            - type: string
+            - type: number
+          description: Parameter value
+          example: "145"
+        unit:
+          type: string
+          description: Measurement unit
+          example: "mg/dL"
+        refRange:
+          type: string
+          description: Reference range
+          example: "70-100"
+        status:
+          type: string
+          enum: [LOW, NORMAL, HIGH]
+          description: Parameter status
+          example: "HIGH"
+        group:
+          type: string
+          description: Parameter category/group
+          example: "Metabolic"
+
+    AnalysisResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/ReportAnalysisData'
+        message:
+          type: string
+          example: "Report analysis completed successfully"
+
+    ReportAnalysisData:
+      type: object
+      properties:
+        summary:
+          $ref: '#/components/schemas/Summary'
+        insights:
+          $ref: '#/components/schemas/Insights'
+        groupedIssues:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupedIssue'
+        meta:
+          $ref: '#/components/schemas/AnalysisMeta'
+
+    Summary:
+      type: object
+      properties:
+        overallAssessment:
+          type: string
+          description: Overall health assessment
+          example: "The patient shows multiple abnormal values consistent with poorly controlled diabetes and kidney dysfunction."
+        highlights:
+          type: array
+          items:
+            type: string
+          description: Key findings
+          example: ["High glucose levels", "Elevated potassium", "Low sodium"]
+        keyFindings:
+          type: array
+          items:
+            type: string
+          description: Important observations
+          example: ["Kidney function impairment", "Electrolyte imbalance"]
+
+    Insights:
+      type: object
+      properties:
+        abnormalFindings:
+          type: array
+          items:
+            $ref: '#/components/schemas/AbnormalFinding'
+        futureComplications:
+          type: array
+          items:
+            $ref: '#/components/schemas/FutureComplication'
+        specialistSuggestions:
+          type: array
+          items:
+            type: string
+          description: Recommended specialists
+          example: ["Endocrinologist", "Nephrologist"]
+        lifestyleRecommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LifestyleRecommendation'
+        treatmentApproaches:
+          type: array
+          items:
+            $ref: '#/components/schemas/TreatmentApproach'
+
+    AbnormalFinding:
+      type: object
+      properties:
+        parameter:
+          type: string
+          example: "Glucose"
+        value:
+          type: string
+          example: "145"
+        unit:
+          type: string
+          example: "mg/dL"
+        refRange:
+          type: string
+          example: "70-100"
+        status:
+          type: string
+          enum: [LOW, HIGH]
+          example: "HIGH"
+        explanation:
+          type: string
+          description: Patient-friendly explanation
+          example: "High glucose levels may indicate poorly controlled diabetes"
+        specialistSuggestion:
+          type: string
+          example: "Endocrinologist"
+
+    FutureComplication:
+      type: object
+      properties:
+        condition:
+          type: string
+          example: "Diabetic Nephropathy"
+        riskLevel:
+          type: string
+          enum: [low, medium, high]
+          example: "high"
+        description:
+          type: string
+          example: "If untreated, high glucose may cause kidney damage"
+        prevention:
+          type: array
+          items:
+            type: string
+          example: ["Maintain blood sugar control", "Regular monitoring"]
+
+    LifestyleRecommendation:
+      type: object
+      properties:
+        category:
+          type: string
+          enum: [diet, exercise, hydration, sleep, stress, other]
+          example: "diet"
+        recommendation:
+          type: string
+          example: "Follow a low-sodium diet to help manage blood pressure"
+        priority:
+          type: string
+          enum: [high, medium, low]
+          example: "high"
+
+    TreatmentApproach:
+      type: object
+      properties:
+        condition:
+          type: string
+          example: "Diabetes"
+        generalApproach:
+          type: string
+          description: General treatment approach without specific dosing
+          example: "Diabetes is typically managed with medication, diet, and lifestyle changes"
+        disclaimer:
+          type: string
+          example: "Always consult a licensed doctor for exact prescription"
+
+    GroupedIssue:
+      type: object
+      properties:
+        category:
+          type: string
+          example: "Metabolic"
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+        recommendations:
+          type: array
+          items:
+            type: string
+          example: ["Monitor blood glucose levels", "Consult endocrinologist"]
+        priority:
+          type: string
+          enum: [high, medium, low]
+          example: "high"
+
+    AnalysisMeta:
+      type: object
+      properties:
+        modelUsed:
+          type: string
+          example: "gemini-1.5-flash"
+        disclaimer:
+          type: string
+          description: Medical safety disclaimer
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        processingTime:
+          type: integer
+          description: Processing time in milliseconds
+          example: 2500
+        confidence:
+          type: integer
+          description: Analysis confidence score (0-100)
+          example: 85
+
+    StatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            status:
+              type: string
+              example: "operational"
+            model:
+              type: string
+              example: "gemini-1.5-flash"
+            version:
+              type: string
+              example: "1.0.0"
+            timestamp:
+              type: string
+              format: date-time
+            features:
+              type: array
+              items:
+                type: string
+              example: ["Detailed report analysis", "Safety validation", "Dosing pattern redaction"]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Validation failed"
+        message:
+          type: string
+          example: "Invalid request data"
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+              value:
+                type: string
+
+    RateLimitError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Rate limit exceeded"
+        message:
+          type: string
+          example: "Maximum 10 requests per 15 minutes allowed"
+        retryAfter:
+          type: integer
+          description: Seconds until rate limit resets
+          example: 900
+
+tags:
+  - name: Report Analysis
+    description: AI-powered medical report analysis endpoints
+  - name: Health
+    description: Health check endpoints

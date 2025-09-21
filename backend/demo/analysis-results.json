@@ -1,0 +1,267 @@
+{
+  "success": true,
+  "data": {
+    "summary": {
+      "overallAssessment": "John Doe presents with poorly controlled type 2 diabetes, dyslipidemia (abnormal lipid levels), and mild liver dysfunction.  He requires urgent medical attention and lifestyle changes.",
+      "highlights": [
+        "High blood glucose and HbA1c indicating poor diabetes control",
+        "Elevated cholesterol and triglycerides suggesting dyslipidemia",
+        "Slightly elevated liver enzymes suggesting mild liver dysfunction"
+      ],
+      "keyFindings": [
+        "Urgent need for improved diabetes management",
+        "Significant cardiovascular risk factors present"
+      ]
+    },
+    "insights": {
+      "abnormalFindings": [
+        {
+          "parameter": "Glucose",
+          "value": "145",
+          "unit": "mg/dL",
+          "refRange": "70-100 mg/dL",
+          "status": "HIGH",
+          "explanation": "High blood sugar levels indicate your body isn't processing glucose properly, a hallmark of diabetes. This can lead to long-term complications.",
+          "specialistSuggestion": "Endocrinologist"
+        },
+        {
+          "parameter": "HbA1c",
+          "value": "8.2",
+          "unit": "%",
+          "refRange": "<7.0%",
+          "status": "HIGH",
+          "explanation": "This test reflects your average blood sugar over the past 2-3 months.  A high HbA1c indicates poor diabetes control and increased risk of complications.",
+          "specialistSuggestion": "Endocrinologist"
+        },
+        {
+          "parameter": "Total Cholesterol",
+          "value": "220",
+          "unit": "mg/dL",
+          "refRange": "<200 mg/dL",
+          "status": "HIGH",
+          "explanation": "High cholesterol increases your risk of heart disease and stroke.",
+          "specialistSuggestion": "Cardiologist"
+        },
+        {
+          "parameter": "LDL Cholesterol",
+          "value": "145",
+          "unit": "mg/dL",
+          "refRange": "<100 mg/dL",
+          "status": "HIGH",
+          "explanation": "This is the 'bad' cholesterol, and high levels significantly increase your risk of heart disease.",
+          "specialistSuggestion": "Cardiologist"
+        },
+        {
+          "parameter": "HDL Cholesterol",
+          "value": "35",
+          "unit": "mg/dL",
+          "refRange": ">40 mg/dL",
+          "status": "LOW",
+          "explanation": "This is the 'good' cholesterol, and low levels increase your risk of heart disease.",
+          "specialistSuggestion": "Cardiologist"
+        },
+        {
+          "parameter": "Triglycerides",
+          "value": "180",
+          "unit": "mg/dL",
+          "refRange": "<150 mg/dL",
+          "status": "HIGH",
+          "explanation": "High triglycerides are another risk factor for heart disease.",
+          "specialistSuggestion": "Cardiologist"
+        },
+        {
+          "parameter": "ALT",
+          "value": "45",
+          "unit": "U/L",
+          "refRange": "7-35 U/L",
+          "status": "HIGH",
+          "explanation": "Slightly elevated liver enzymes may indicate mild liver inflammation or damage.  Further investigation may be needed.",
+          "specialistSuggestion": "Hepatologist or Gastroenterologist"
+        }
+      ],
+      "futureComplications": [
+        {
+          "condition": "Cardiovascular Disease",
+          "riskLevel": "high",
+          "description": "High cholesterol, triglycerides, and poorly controlled diabetes significantly increase your risk of heart attack, stroke, and other cardiovascular problems.",
+          "prevention": [
+            "Maintain a healthy diet",
+            "Regular exercise",
+            "Manage blood pressure and cholesterol"
+          ]
+        },
+        {
+          "condition": "Diabetic Complications",
+          "riskLevel": "high",
+          "description": "Poorly controlled diabetes can lead to nerve damage, kidney disease, eye problems, and other serious complications.",
+          "prevention": [
+            "Strict blood sugar control",
+            "Regular checkups with your doctor",
+            "Healthy lifestyle choices"
+          ]
+        },
+        {
+          "condition": "Liver Disease",
+          "riskLevel": "low to medium",
+          "description": "While currently mild, untreated liver issues could worsen over time.",
+          "prevention": [
+            "Healthy diet",
+            "Avoid alcohol excess",
+            "Regular checkups"
+          ]
+        }
+      ],
+      "specialistSuggestions": [
+        "Endocrinologist",
+        "Cardiologist",
+        "Hepatologist or Gastroenterologist"
+      ],
+      "lifestyleRecommendations": [
+        {
+          "category": "diet",
+          "recommendation": "Follow a balanced diet low in saturated and trans fats, cholesterol, and added sugars. Focus on fruits, vegetables, whole grains, and lean proteins.",
+          "priority": "high"
+        },
+        {
+          "category": "exercise",
+          "recommendation": "Engage in regular physical activity, aiming for at least 150 minutes of moderate-intensity or 75 minutes of vigorous-intensity aerobic exercise per week.",
+          "priority": "high"
+        },
+        {
+          "category": "stress",
+          "recommendation": "Practice stress-reducing techniques such as yoga, meditation, or deep breathing exercises.",
+          "priority": "medium"
+        },
+        {
+          "category": "sleep",
+          "recommendation": "Aim for 7-9 hours of quality sleep per night.",
+          "priority": "medium"
+        }
+      ],
+      "treatmentApproaches": [
+        {
+          "condition": "Type 2 Diabetes",
+          "generalApproach": "Treatment typically involves lifestyle modifications (diet and exercise) and medications to help regulate blood sugar levels.  Your doctor may adjust your current medications or add new ones.",
+          "disclaimer": "Always consult a licensed doctor for exact prescription and dosage."
+        },
+        {
+          "condition": "Dyslipidemia",
+          "generalApproach": "Treatment may involve lifestyle changes and medications to lower cholesterol and triglyceride levels.",
+          "disclaimer": "Always consult a licensed doctor for exact prescription and dosage."
+        },
+        {
+          "condition": "Mild Liver Dysfunction",
+          "generalApproach": "Treatment depends on the underlying cause.  Your doctor may recommend further testing and lifestyle changes.",
+          "disclaimer": "Always consult a licensed doctor for exact prescription and dosage."
+        }
+      ]
+    },
+    "groupedIssues": [
+      {
+        "category": "Metabolic",
+        "parameters": [
+          {
+            "name": "Glucose",
+            "value": "145",
+            "unit": "mg/dL",
+            "refRange": "70-100 mg/dL",
+            "status": "HIGH",
+            "group": "Metabolic"
+          },
+          {
+            "name": "HbA1c",
+            "value": "8.2",
+            "unit": "%",
+            "refRange": "<7.0%",
+            "status": "HIGH",
+            "group": "Metabolic"
+          }
+        ],
+        "recommendations": [
+          "Strict blood glucose monitoring",
+          "Dietary changes to control blood sugar",
+          "Regular exercise"
+        ],
+        "priority": "high"
+      },
+      {
+        "category": "Cardiovascular",
+        "parameters": [
+          {
+            "name": "Total Cholesterol",
+            "value": "220",
+            "unit": "mg/dL",
+            "refRange": "<200 mg/dL",
+            "status": "HIGH",
+            "group": "Lipid Profile"
+          },
+          {
+            "name": "LDL Cholesterol",
+            "value": "145",
+            "unit": "mg/dL",
+            "refRange": "<100 mg/dL",
+            "status": "HIGH",
+            "group": "Lipid Profile"
+          },
+          {
+            "name": "HDL Cholesterol",
+            "value": "35",
+            "unit": "mg/dL",
+            "refRange": ">40 mg/dL",
+            "status": "LOW",
+            "group": "Lipid Profile"
+          },
+          {
+            "name": "Triglycerides",
+            "value": "180",
+            "unit": "mg/dL",
+            "refRange": "<150 mg/dL",
+            "status": "HIGH",
+            "group": "Lipid Profile"
+          }
+        ],
+        "recommendations": [
+          "Dietary changes to lower cholesterol and triglycerides",
+          "Regular exercise",
+          "Consider medication to manage lipid levels"
+        ],
+        "priority": "high"
+      },
+      {
+        "category": "Hepatic",
+        "parameters": [
+          {
+            "name": "ALT",
+            "value": "45",
+            "unit": "U/L",
+            "refRange": "7-35 U/L",
+            "status": "HIGH",
+            "group": "Liver Function"
+          },
+          {
+            "name": "AST",
+            "value": "40",
+            "unit": "U/L",
+            "refRange": "8-40 U/L",
+            "status": "NORMAL",
+            "group": "Liver Function"
+          }
+        ],
+        "recommendations": [
+          "Further investigation into the cause of elevated ALT",
+          "Avoid alcohol excess",
+          "Maintain a healthy diet"
+        ],
+        "priority": "medium"
+      }
+    ],
+    "meta": {
+      "modelUsed": "gemini-1.5-flash",
+      "disclaimer": "\nIMPORTANT MEDICAL DISCLAIMER:\nThis analysis is for informational purposes only and should not be considered as medical advice, diagnosis, or treatment recommendation. The information provided is based on general medical knowledge and should not replace professional medical consultation.\n\nKEY SAFETY POINTS:\n- Always consult with a licensed healthcare provider for proper diagnosis and treatment\n- Exact dosage, frequency, and duration must be prescribed by a qualified doctor\n- Do not self-medicate or adjust medications without medical supervision\n- Seek immediate medical attention for serious symptoms or emergencies\n- This analysis is a decision-support tool, not a prescriber\n\nThe analysis provided here is intended to help you understand your medical report better and facilitate informed discussions with your healthcare provider.",
+      "timestamp": "2025-09-21T07:49:19.760Z",
+      "processingTime": 14972,
+      "confidence": 95
+    }
+  },
+  "message": "Report analysis completed successfully"
+}

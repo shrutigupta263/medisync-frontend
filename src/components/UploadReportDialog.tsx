@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Upload, FileText, CheckCircle, X, CloudUpload } from 'lucide-react';
+import { Upload, FileText, CheckCircle, X, CloudUpload, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
@@ -206,15 +206,22 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
       case 3:
         return (
           <div className="space-y-6 text-center">
-            <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-8 h-8 text-green-600" />
+            <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+              {isUploading || createReport.isPending ? (
+                <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+              ) : (
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              )}
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Analysis Complete!
+                {isUploading || createReport.isPending ? 'Analyzing Report...' : 'Analysis Complete!'}
               </h3>
               <p className="text-gray-500 mt-1">
-                Your report has been successfully processed and analyzed
+                {isUploading || createReport.isPending 
+                  ? 'AI is analyzing your medical report. This may take a few moments.'
+                  : 'Your report has been successfully processed and analyzed'
+                }
               </p>
             </div>
             {selectedFile && (
@@ -242,40 +249,40 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
                   
                   setIsUploading(true);
                   try {
-                    // Load the Yash medical analysis data
-                    let medicalAnalysisData = null;
-                    
-                    // Check if this is the Yash report and load the analysis
-                    if (selectedFile.name.includes('Yash') || selectedFile.name.includes('Medical')) {
-                      try {
-                        medicalAnalysisData = await loadMedicalReportData('/medical-report-response.json');
-                      } catch (error) {
-                        // Silently handle error - analysis data is optional
-                      }
-                    }
-                    
-                    // Create report record in database
-                    const reportData = {
-                      title: selectedFile.name.replace(/\.[^/.]+$/, ""), // Remove file extension
-                      type: selectedFile.type.includes('pdf') ? 'PDF' : 'Image',
-                      date: new Date().toISOString(),
-                      file_url: URL.createObjectURL(selectedFile), // In real app, this would be uploaded to storage
-                      status: 'COMPLETED' as const,
-                      medical_data: medicalAnalysisData, // Include the loaded analysis data
-                      doctor: medicalAnalysisData ? 'Dr. Smith' : undefined,
-                      facility: medicalAnalysisData ? 'Central Medical Lab' : undefined,
-                    };
-                    
-                    const newReport = await createReport.mutateAsync(reportData);
+                    // Upload file to backend for immediate AI analysis
+                    const newReport = await createReport.mutateAsync(selectedFile);
                     
                     if (newReport) {
                       handleClose();
-                      navigate(`/reports/${newReport.id}`);
+                      
+                      // Check if analysis is available immediately
+                      console.log('Upload response:', newReport);
+                      console.log('Medical data:', newReport.medical_data);
+                      
+                      if (newReport.medical_data) {
+                        // Show success message with analysis ready
+                        toast({
+                          title: "Analysis Complete!",
+                          description: "Your medical report has been analyzed. View your detailed AI insights now.",
+                        });
+                        
+                        // Navigate directly to the report with analysis
+                        navigate(`/reports/${newReport.id}`);
+                      } else {
+                        // Fallback message if no analysis (shouldn't happen with new flow)
+                        toast({
+                          title: "Report Uploaded Successfully!",
+                          description: "Your medical report has been uploaded and is being analyzed.",
+                        });
+                        
+                        // Navigate to reports page
+                        navigate('/reports');
+                      }
                     }
                   } catch (error) {
                     toast({
                       title: "Upload Failed",
-                      description: "Failed to save your report. Please try again.",
+                      description: "Failed to upload and analyze your report. Please try again.",
                       variant: "destructive",
                     });
                   } finally {
@@ -285,9 +292,9 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
                 disabled={isUploading || createReport.isPending}
               >
                 {isUploading || createReport.isPending ? (
-                  <>Saving...</>
+                  <>Analyzing Report...</>
                 ) : (
-                  <>View Report</>
+                  <>Analyze Report</>
                 )}
               </Button>
             </div>

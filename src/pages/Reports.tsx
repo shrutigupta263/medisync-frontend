@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Plus, Search, Filter, FileText, Calendar, Eye, Download, Trash2, CheckCircle, AlertCircle, XCircle, Clock } from 'lucide-react';
+import { Plus, Search, Filter, FileText, Calendar, Eye, Download, Trash2, CheckCircle, AlertCircle, XCircle, Clock, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,12 +12,17 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getStatusColor } from '@/lib/report-utils';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { EmptyState } from '@/components/ui/empty-state';
+import SummaryCards from '@/components/report/SummaryCards';
+import HealthScoreOverview from '@/components/report/HealthScoreOverview';
+import SmartInsights from '@/components/report/SmartInsights';
+import MedicalTestDetails from '@/components/report/MedicalTestDetails';
 
 // Summary data will be calculated from user reports
 
 export default function Reports() {
   const { user } = useAuth();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const { data: reports = [], isLoading, error } = useUserReports();
   const deleteReport = useDeleteReport();
 
@@ -33,6 +38,19 @@ export default function Reports() {
       await deleteReport.mutateAsync(reportId);
     }
   };
+
+  const handleViewFullSummary = () => {
+    console.log('View full summary clicked');
+  };
+
+  // Get selected report with real AI analysis data
+  const selectedReport = reports.find(r => r.id === selectedReportId);
+  const hasAnalysisData = selectedReport?.medical_data && 
+    typeof selectedReport.medical_data === 'object' && 
+    'summary' in selectedReport.medical_data;
+  
+  // Only show analysis if we have real AI analysis data
+  const analysisData = hasAnalysisData ? selectedReport.medical_data : null;
 
   if (isLoading) {
     return (
@@ -162,25 +180,39 @@ export default function Reports() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-semibold">{report.title}</h3>
-                      <Badge className={getStatusColor(report.status)}>
-                        {report.status}
-                      </Badge>
-                    </div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-semibold">{report.title}</h3>
+                        <Badge className={getStatusColor(report.status)}>
+                          {report.status === 'PROCESSING' && (
+                            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                          )}
+                          {report.status}
+                        </Badge>
+                      </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span>{new Date(report.date).toLocaleDateString()}</span>
                       {report.doctor && <span>Dr. {report.doctor}</span>}
                       {report.facility && <span>{report.facility}</span>}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <NavLink to={`/reports/${report.id}`}>
-                      <Button variant="outline" size="sm">
-                        <Eye className="h-4 w-4 mr-1" />
-                        View
-                      </Button>
-                    </NavLink>
+                    <div className="flex items-center gap-2">
+                      <NavLink to={`/reports/${report.id}`}>
+                        <Button variant="outline" size="sm">
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                      </NavLink>
+                      {report.status === 'COMPLETED' && report.medical_data && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setSelectedReportId(report.id)}
+                          className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Analysis
+                        </Button>
+                      )}
                     {report.file_url && (
                       <Button variant="outline" size="sm" asChild>
                         <a href={report.file_url} download>
@@ -207,6 +239,50 @@ export default function Reports() {
         )}
       </div>
 
+      {/* Enhanced Analysis View - Only show when report has real AI analysis */}
+      {selectedReportId && analysisData && (
+        <div className="mt-12 space-y-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Comprehensive Health Analysis</h2>
+              <p className="text-gray-600 mt-1">
+                {selectedReportId 
+                  ? `Detailed analysis for ${selectedReport?.title || 'selected report'}`
+                  : 'Sample comprehensive health analysis with detailed insights and recommendations'
+                }
+              </p>
+            </div>
+            {selectedReportId && (
+              <Button 
+                variant="outline" 
+                onClick={() => setSelectedReportId(null)}
+                className="text-gray-600"
+              >
+                Close Analysis
+              </Button>
+            )}
+          </div>
+
+          {/* Summary & Key Highlights */}
+          <SummaryCards 
+            highlights={analysisData.highlights}
+            onViewFullSummary={handleViewFullSummary}
+          />
+
+          {/* Health Score Overview */}
+          <HealthScoreOverview
+            overallScore={analysisData.overallScore}
+            assessment={analysisData.assessment}
+            categoryScores={analysisData.categoryScores}
+          />
+
+          {/* Smart Insights & Recommendations */}
+          <SmartInsights insights={analysisData.insights} />
+
+          {/* Medical Test Details */}
+          <MedicalTestDetails parameters={analysisData.parameters} />
+        </div>
+      )}
 
       {/* Upload Report Dialog */}
       <UploadReportDialog 

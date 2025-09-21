@@ -1,0 +1,173 @@
+{
+  "patientInfo": {
+    "age": 45,
+    "gender": "male",
+    "weight": 75,
+    "height": 175,
+    "medicalHistory": ["Hypertension", "Type 2 Diabetes"],
+    "currentMedications": ["Metformin 500mg", "Lisinopril 10mg"]
+  },
+  "reportText": "COMPREHENSIVE METABOLIC PANEL\n\nPatient: John Doe\nDate: 2024-01-15\nLab ID: LAB123456\n\nRESULTS:\n\nGlucose: 145 mg/dL (High) [Ref: 70-100]\nSodium: 134 mmol/L (Low) [Ref: 136-145]\nPotassium: 5.8 mmol/L (High) [Ref: 3.5-5.0]\nChloride: 98 mmol/L (Low) [Ref: 98-107]\nBUN: 25 mg/dL (High) [Ref: 7-20]\nCreatinine: 1.4 mg/dL (High) [Ref: 0.6-1.2]\nTotal Protein: 6.2 g/dL (Normal) [Ref: 6.0-8.3]\nAlbumin: 3.8 g/dL (Normal) [Ref: 3.5-5.0]\nTotal Bilirubin: 1.2 mg/dL (High) [Ref: 0.2-1.0]\nALT: 45 U/L (Normal) [Ref: 7-56]\nAST: 38 U/L (Normal) [Ref: 10-40]\nAlkaline Phosphatase: 95 U/L (Normal) [Ref: 44-147]\n\nLIPID PANEL:\nTotal Cholesterol: 220 mg/dL (High) [Ref: <200]\nLDL: 145 mg/dL (High) [Ref: <100]\nHDL: 35 mg/dL (Low) [Ref: >40]\nTriglycerides: 280 mg/dL (High) [Ref: <150]\n\nCOMPLETE BLOOD COUNT:\nHemoglobin: 12.5 g/dL (Low) [Ref: 13.8-17.2]\nHematocrit: 38% (Low) [Ref: 41-50]\nWBC: 7.2 K/uL (Normal) [Ref: 4.5-11.0]\nPlatelets: 285 K/uL (Normal) [Ref: 150-450]\n\nTHYROID FUNCTION:\nTSH: 4.8 mIU/L (High) [Ref: 0.4-4.0]\nFree T4: 0.8 ng/dL (Low) [Ref: 0.9-1.7]\n\nVITAMINS:\nVitamin D: 18 ng/mL (Low) [Ref: 30-100]\nVitamin B12: 280 pg/mL (Low) [Ref: 300-900]\nFolate: 4.2 ng/mL (Normal) [Ref: 3.0-17.0]\n\nURINALYSIS:\nGlucose: Positive\nProtein: 1+ (Trace)\nKetones: Negative\nSpecific Gravity: 1.025\npH: 5.5\n\nIMPRESSION:\nThe patient shows multiple abnormal values consistent with poorly controlled diabetes, kidney dysfunction, and nutritional deficiencies. Immediate medical attention is recommended.",
+  "parameters": [
+    {
+      "name": "Glucose",
+      "value": "145",
+      "unit": "mg/dL",
+      "refRange": "70-100",
+      "status": "HIGH",
+      "group": "Metabolic"
+    },
+    {
+      "name": "Sodium",
+      "value": "134",
+      "unit": "mmol/L",
+      "refRange": "136-145",
+      "status": "LOW",
+      "group": "Electrolytes"
+    },
+    {
+      "name": "Potassium",
+      "value": "5.8",
+      "unit": "mmol/L",
+      "refRange": "3.5-5.0",
+      "status": "HIGH",
+      "group": "Electrolytes"
+    },
+    {
+      "name": "Chloride",
+      "value": "98",
+      "unit": "mmol/L",
+      "refRange": "98-107",
+      "status": "LOW",
+      "group": "Electrolytes"
+    },
+    {
+      "name": "BUN",
+      "value": "25",
+      "unit": "mg/dL",
+      "refRange": "7-20",
+      "status": "HIGH",
+      "group": "Kidney Function"
+    },
+    {
+      "name": "Creatinine",
+      "value": "1.4",
+      "unit": "mg/dL",
+      "refRange": "0.6-1.2",
+      "status": "HIGH",
+      "group": "Kidney Function"
+    },
+    {
+      "name": "Total Cholesterol",
+      "value": "220",
+      "unit": "mg/dL",
+      "refRange": "<200",
+      "status": "HIGH",
+      "group": "Lipids"
+    },
+    {
+      "name": "LDL",
+      "value": "145",
+      "unit": "mg/dL",
+      "refRange": "<100",
+      "status": "HIGH",
+      "group": "Lipids"
+    },
+    {
+      "name": "HDL",
+      "value": "35",
+      "unit": "mg/dL",
+      "refRange": ">40",
+      "status": "LOW",
+      "group": "Lipids"
+    },
+    {
+      "name": "Triglycerides",
+      "value": "280",
+      "unit": "mg/dL",
+      "refRange": "<150",
+      "status": "HIGH",
+      "group": "Lipids"
+    },
+    {
+      "name": "Hemoglobin",
+      "value": "12.5",
+      "unit": "g/dL",
+      "refRange": "13.8-17.2",
+      "status": "LOW",
+      "group": "Hematology"
+    },
+    {
+      "name": "Hematocrit",
+      "value": "38",
+      "unit": "%",
+      "refRange": "41-50",
+      "status": "LOW",
+      "group": "Hematology"
+    },
+    {
+      "name": "TSH",
+      "value": "4.8",
+      "unit": "mIU/L",
+      "refRange": "0.4-4.0",
+      "status": "HIGH",
+      "group": "Thyroid"
+    },
+    {
+      "name": "Free T4",
+      "value": "0.8",
+      "unit": "ng/dL",
+      "refRange": "0.9-1.7",
+      "status": "LOW",
+      "group": "Thyroid"
+    },
+    {
+      "name": "Vitamin D",
+      "value": "18",
+      "unit": "ng/mL",
+      "refRange": "30-100",
+      "status": "LOW",
+      "group": "Vitamins"
+    },
+    {
+      "name": "Vitamin B12",
+      "value": "280",
+      "unit": "pg/mL",
+      "refRange": "300-900",
+      "status": "LOW",
+      "group": "Vitamins"
+    },
+    {
+      "name": "Total Bilirubin",
+      "value": "1.2",
+      "unit": "mg/dL",
+      "refRange": "0.2-1.0",
+      "status": "HIGH",
+      "group": "Liver Function"
+    },
+    {
+      "name": "Total Protein",
+      "value": "6.2",
+      "unit": "g/dL",
+      "refRange": "6.0-8.3",
+      "status": "NORMAL",
+      "group": "Liver Function"
+    },
+    {
+      "name": "Albumin",
+      "value": "3.8",
+      "unit": "g/dL",
+      "refRange": "3.5-5.0",
+      "status": "NORMAL",
+      "group": "Liver Function"
+    },
+    {
+      "name": "ALT",
+      "value": "45",
+      "unit": "U/L",
+      "refRange": "7-56",
+      "status": "NORMAL",
+      "group": "Liver Function"
+    }
+  ]
+}
