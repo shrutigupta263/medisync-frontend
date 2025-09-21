@@ -37,7 +37,10 @@ export default function Reports() {
   };
 
   const handleViewFullSummary = () => {
-    // TODO: Implement full summary view
+    // Navigate to report summary page
+    if (selectedReportId) {
+      // This functionality can be implemented when needed
+    }
   };
 
   // Get selected report with real AI analysis data

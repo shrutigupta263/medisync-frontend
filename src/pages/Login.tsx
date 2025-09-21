@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
+import { DevModeNotice } from '@/components/DevModeNotice';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,6 +17,8 @@ export default function Login() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resendingConfirmation, setResendingConfirmation] = useState(false);
+  const [showResendButton, setShowResendButton] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -28,9 +32,23 @@ export default function Login() {
       const { user, error } = await signIn(formData.email, formData.password);
       
       if (error) {
+        let errorMessage = error.message;
+        let errorTitle = "Login Failed";
+        
+        // Handle specific error cases
+        if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+          errorTitle = "Email Not Confirmed";
+          errorMessage = "Please check your email and click the confirmation link before signing in. If you can't find the email, check your spam folder.";
+          setShowResendButton(true); // Show resend button for unconfirmed emails
+        } else if (error.message.includes('Invalid login credentials')) {
+          errorMessage = "Invalid email or password. Please check your credentials and try again.";
+        } else if (error.message.includes('email_address_invalid')) {
+          errorMessage = "Please enter a valid email address (e.g., user@gmail.com).";
+        }
+        
         toast({
-          title: "Login Failed",
-          description: error.message,
+          title: errorTitle,
+          description: errorMessage,
           variant: "destructive",
         });
       } else if (user) {
@@ -59,10 +77,57 @@ export default function Login() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Hide resend button when user changes email
+    if (e.target.name === 'email') {
+      setShowResendButton(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!formData.email) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setResendingConfirmation(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: formData.email,
+      });
+
+      if (error) {
+        toast({
+          title: "Resend Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Confirmation Email Sent!",
+          description: "Please check your email for the confirmation link.",
+        });
+        setShowResendButton(false);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to resend confirmation email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setResendingConfirmation(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-health-green-light/20 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-health-green-light/20 p-4">
+      <DevModeNotice />
+      <div className="min-h-screen flex items-center justify-center pt-20">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -115,6 +180,18 @@ export default function Login() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Signing In...' : 'Sign In'}
             </Button>
+            
+            {showResendButton && (
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full mt-2" 
+                disabled={resendingConfirmation}
+                onClick={handleResendConfirmation}
+              >
+                {resendingConfirmation ? 'Resending...' : 'Resend Confirmation Email'}
+              </Button>
+            )}
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2 text-center text-sm text-muted-foreground">
@@ -129,6 +206,7 @@ export default function Login() {
           </div>
         </CardFooter>
       </Card>
+      </div>
     </div>
   );
 }

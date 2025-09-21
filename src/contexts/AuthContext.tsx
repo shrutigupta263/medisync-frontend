@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, Session, AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+import { authBypass } from '@/lib/auth-bypass'
 
 interface AuthContextType {
   user: User | null
@@ -34,53 +35,117 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    let isMounted = true;
+    
+    // Get initial session with timeout
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (!isMounted) return;
+        
+        if (error) {
+          console.error('Session error:', error)
+        }
+        
+        setSession(session)
+        setUser(session?.user ?? null)
+        setLoading(false)
+      } catch (error) {
+        console.error('Session initialization error:', error)
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    // Add timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        console.warn('Auth initialization timeout, continuing without session')
+        setLoading(false)
+      }
+    }, 5000) // 5 second timeout
+
+    initializeAuth()
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
+      if (isMounted) {
+        setSession(session)
+        setUser(session?.user ?? null)
+        setLoading(false)
+      }
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId)
+      subscription.unsubscribe()
+    }
   }, [])
 
   const signUp = async (email: string, password: string, metadata?: { firstName?: string; lastName?: string }) => {
     try {
+      const signupMetadata = {
+        name: metadata ? `${metadata.firstName} ${metadata.lastName}`.trim() : undefined,
+        firstName: metadata?.firstName,
+        lastName: metadata?.lastName,
+      }
+
+      // Try bypass signup first
+      const bypassResult = await authBypass.signUpWithBypass(email, password, signupMetadata)
+      
+      if (bypassResult.bypassed) {
+        return { user: bypassResult.user, error: bypassResult.error }
+      }
+
+      // Fallback to normal signup if bypass not used
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            name: metadata ? `${metadata.firstName} ${metadata.lastName}`.trim() : undefined,
-            firstName: metadata?.firstName,
-            lastName: metadata?.lastName,
-          }
+          data: signupMetadata,
+          emailRedirectTo: `${window.location.origin}/login?confirmed=true`
         }
       })
       return { user: data.user, error }
     } catch (error) {
-      return { user: null, error: { message: 'Supabase not configured. Please set up your environment variables.' } as any }
+      console.error('SignUp error:', error)
+      return { user: null, error: { message: `Authentication error: ${error instanceof Error ? error.message : 'Unknown error'}` } as any }
     }
   }
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Try bypass signin first
+      const bypassResult = await authBypass.signInWithBypass(email, password)
+      
+      if (bypassResult.bypassed) {
+        // Manually set the user and session for bypassed login
+        setUser(bypassResult.user)
+        setSession({
+          access_token: 'dev-bypass-token',
+          refresh_token: 'dev-bypass-refresh',
+          expires_in: 3600,
+          expires_at: Math.floor(Date.now() / 1000) + 3600,
+          token_type: 'bearer',
+          user: bypassResult.user
+        } as any)
+        return { user: bypassResult.user, error: bypassResult.error }
+      }
+
+      // Normal signin if no bypass
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       return { user: data.user, error }
     } catch (error) {
-      return { user: null, error: { message: 'Supabase not configured. Please set up your environment variables.' } as any }
+      console.error('SignIn error:', error)
+      return { user: null, error: { message: `Authentication error: ${error instanceof Error ? error.message : 'Unknown error'}` } as any }
     }
   }
 

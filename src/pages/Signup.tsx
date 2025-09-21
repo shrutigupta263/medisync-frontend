@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { DevModeNotice } from '@/components/DevModeNotice';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -65,11 +66,21 @@ export default function Signup() {
           variant: "destructive",
         });
       } else if (user) {
-        toast({
-          title: "Account Created!",
-          description: "Please check your email to confirm your account.",
-        });
-        navigate('/login');
+        // Check if user needs email confirmation
+        if (user.email_confirmed_at) {
+          toast({
+            title: "Account Created!",
+            description: "Your account has been created and confirmed successfully.",
+          });
+          navigate('/login');
+        } else {
+          toast({
+            title: "Check Your Email!",
+            description: "We've sent you a confirmation link. Please check your email and click the link to activate your account before signing in.",
+            duration: 8000, // Show longer for important message
+          });
+          navigate('/login');
+        }
       }
     } catch (error) {
       toast({
@@ -90,7 +101,9 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-health-green-light/20 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-health-green-light/20 p-4">
+      <DevModeNotice />
+      <div className="min-h-screen flex items-center justify-center pt-20">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -216,6 +229,7 @@ export default function Signup() {
           </NavLink>
         </CardFooter>
       </Card>
+      </div>
     </div>
   );
 }
