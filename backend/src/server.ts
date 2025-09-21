@@ -13,7 +13,7 @@ import dotenv from 'dotenv';
 // Import controllers and middleware
 import { ReportController } from './controllers/reportController.js';
 import { AnalysisController } from './controllers/analysisController.js';
-import { upload, handleUploadError } from './middleware/upload.js';
+import { upload, handleUploadError } from './middleware/upload.ts';
 import { validateFileUpload, validateReportId, validateUserId } from './middleware/validation.ts';
 import { 
   validateAnalysisRequest, 
@@ -38,7 +38,12 @@ app.use(helmet());
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:8080', 
+    'http://localhost:8081',
+    process.env.CORS_ORIGIN || 'http://localhost:5173'
+  ].filter(Boolean),
   credentials: true
 }));
 

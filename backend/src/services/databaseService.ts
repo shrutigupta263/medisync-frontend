@@ -4,6 +4,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { UserReport, AIAnalysisResult, ProcessingStatus } from '../types/medical.ts';
+import { ReportAnalysisResponse } from '../types/report-analysis.ts';
 
 export class DatabaseService {
   private supabase;
@@ -78,6 +79,7 @@ export class DatabaseService {
    * Update report with extracted text
    */
   async updateReportWithText(reportId: string, extractedText: string): Promise<UserReport> {
+    this.ensureDatabase();
     const { data, error } = await this.supabase
       .from('user_reports')
       .update({ 
@@ -96,7 +98,7 @@ export class DatabaseService {
   /**
    * Update report with AI analysis results
    */
-  async updateReportWithAnalysis(reportId: string, analysis: AIAnalysisResult): Promise<UserReport> {
+  async updateReportWithAnalysis(reportId: string, analysis: AIAnalysisResult | ReportAnalysisResponse): Promise<UserReport> {
     const { data, error } = await this.supabase
       .from('user_reports')
       .update({ 

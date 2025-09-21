@@ -84,6 +84,8 @@ export function TopBar() {
         <div className="relative hidden md:block">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
+            id="global-search"
+            name="globalSearch"
             placeholder="Search reports, family..."
             className="pl-10 w-64 bg-muted/50 border-muted focus:bg-background"
           />

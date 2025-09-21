@@ -75,13 +75,6 @@ export default function ReportById() {
     }
   };
 
-  // Debug logging
-  console.log('Report data:', report);
-  console.log('Medical data:', report?.medical_data);
-  console.log('Has Enhanced Analysis:', hasEnhancedAnalysis);
-  console.log('Has Legacy Analysis:', hasLegacyAnalysis);
-  console.log('Medical Info:', medicalInfo);
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -418,7 +411,56 @@ export default function ReportById() {
                 )}
               </CardContent>
             </Card>
-          ) : null}
+          ) : (
+            /* No Analysis Available - Show Enhanced AI Analysis Button */
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5" />
+                  AI Medical Analysis
+                </CardTitle>
+                <CardDescription>Get comprehensive AI-powered insights for your medical report</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-center py-8">
+                  <div className="mx-auto w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                    <Activity className="h-8 w-8 text-blue-500" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">No Analysis Available</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    This report doesn't have AI analysis yet. Click the button below to generate comprehensive medical insights.
+                  </p>
+                  <Button 
+                    onClick={performEnhancedAnalysis}
+                    disabled={isAnalyzing}
+                    size="lg"
+                    className="min-w-[200px]"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        <Activity className="mr-2 h-4 w-4" />
+                        Generate AI Analysis
+                      </>
+                    )}
+                  </Button>
+                </div>
+                
+                {report?.extracted_text && (
+                  <div className="mt-6 p-4 bg-muted rounded-lg">
+                    <h4 className="font-medium mb-2">Extracted Text Preview</h4>
+                    <p className="text-sm text-muted-foreground line-clamp-3">
+                      {report.extracted_text.substring(0, 200)}...
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
       </div>
     </div>
   );

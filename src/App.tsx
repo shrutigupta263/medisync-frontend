@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -23,6 +23,52 @@ import { SupabaseConfigNotice } from "./components/SupabaseConfigNotice";
 
 const queryClient = new QueryClient();
 
+// Create router with future flags enabled
+const router = createBrowserRouter([
+  // Public Routes
+  {
+    path: "/login",
+    element: <Login />
+  },
+  {
+    path: "/signup", 
+    element: <Signup />
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />
+  },
+  // Protected Application Routes - All inside AppShell
+  {
+    path: "/",
+    element: <ProtectedRoute><AppShell /></ProtectedRoute>,
+    children: [
+      { index: true, element: <Dashboard /> },
+      { path: "reports", element: <Reports /> },
+      { path: "reports/upload", element: <ReportStepper /> },
+      { path: "reports/:id", element: <ReportById /> },
+      { path: "reports/summary", element: <ReportSummary /> },
+      { path: "settings", element: <Settings /> },
+      { path: "manage-family", element: <ManageProfiles /> },
+      { path: "family", element: <FamilyHealthDashboard /> }
+    ]
+  },
+  // Catch-all route
+  {
+    path: "*",
+    element: <NotFound />
+  }
+], {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_skipActionErrorRevalidation: true
+  }
+});
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -30,29 +76,7 @@ const App = () => (
         <SupabaseConfigNotice />
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-
-            {/* Protected Application Routes - All inside AppShell */}
-            <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/reports/upload" element={<ReportStepper />} />
-              <Route path="/reports/:id" element={<ReportById />} />
-              <Route path="/reports/summary" element={<ReportSummary />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/manage-family" element={<ManageProfiles />} />
-              <Route path="/family" element={<FamilyHealthDashboard />} />
-            </Route>
-
-            {/* Catch-all route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <RouterProvider router={router} />
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>

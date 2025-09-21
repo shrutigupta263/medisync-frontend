@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Plus, Search, Filter, FileText, Calendar, Eye, Download, Trash2, CheckCircle, AlertCircle, XCircle, Clock, Loader2 } from 'lucide-react';
+import { Plus, FileText, Calendar, Eye, Download, Trash2, CheckCircle, AlertCircle, XCircle, Clock, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UploadReportDialog } from '@/components/UploadReportDialog';
@@ -16,8 +15,6 @@ import SummaryCards from '@/components/report/SummaryCards';
 import HealthScoreOverview from '@/components/report/HealthScoreOverview';
 import SmartInsights from '@/components/report/SmartInsights';
 import MedicalTestDetails from '@/components/report/MedicalTestDetails';
-
-// Summary data will be calculated from user reports
 
 export default function Reports() {
   const { user } = useAuth();
@@ -40,7 +37,7 @@ export default function Reports() {
   };
 
   const handleViewFullSummary = () => {
-    console.log('View full summary clicked');
+    // TODO: Implement full summary view
   };
 
   // Get selected report with real AI analysis data

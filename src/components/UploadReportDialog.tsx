@@ -256,9 +256,6 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
                       handleClose();
                       
                       // Check if analysis is available immediately
-                      console.log('Upload response:', newReport);
-                      console.log('Medical data:', newReport.medical_data);
-                      
                       if (newReport.medical_data) {
                         // Show success message with analysis ready
                         toast({
