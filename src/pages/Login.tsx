@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
-import { DevModeNotice } from '@/components/DevModeNotice';
+import { SupabaseConfigNotice } from '@/components/SupabaseConfigNotice';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -126,8 +126,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-health-green-light/20 p-4">
-      <DevModeNotice />
-      <div className="min-h-screen flex items-center justify-center pt-20">
+      <SupabaseConfigNotice />
+      <div className="min-h-screen flex items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">

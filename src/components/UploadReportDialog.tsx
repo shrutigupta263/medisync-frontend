@@ -58,12 +58,12 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
         return;
       }
       
-      // File is valid - proceed with normal flow
+      // File is valid - proceed with upload
       setSelectedFile(file);
-      // Simulate moving to analyzing step
-      setTimeout(() => setCurrentStep(2), 500);
-      // Simulate analysis completion
-      setTimeout(() => setCurrentStep(3), 2500);
+      setCurrentStep(2); // Move to analyzing step
+      
+      // Start actual upload and analysis
+      handleUploadAndAnalyze(file);
     }
   }, []);
 
@@ -98,11 +98,58 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
     fileInputRef.current?.click();
   };
 
+  const handleUploadAndAnalyze = useCallback(async (file: File) => {
+    if (!user) {
+      setErrorMessage("User not authenticated. Please log in again.");
+      return;
+    }
+
+    setIsUploading(true);
+    setErrorMessage(null);
+
+    try {
+      // Upload file to backend for immediate AI analysis
+      const newReport = await createReport.mutateAsync(file);
+      
+      if (newReport) {
+        setCurrentStep(3); // Move to completion step
+        
+        // Check if analysis is available immediately
+        if (newReport.medical_data) {
+          // Show success message with analysis ready
+          toast({
+            title: "Analysis Complete!",
+            description: "Your medical report has been analyzed. View your detailed AI insights now.",
+          });
+        } else {
+          // Fallback message if no analysis (shouldn't happen with new flow)
+          toast({
+            title: "Report Uploaded Successfully!",
+            description: "Your medical report has been uploaded and is being analyzed.",
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      setErrorMessage(error instanceof Error ? error.message : "Failed to upload and analyze your report. Please try again.");
+      setCurrentStep(1); // Go back to upload step
+      
+      toast({
+        title: "Upload Failed",
+        description: "Failed to upload and analyze your report. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  }, [user, createReport, toast]);
+
   const handleClose = () => {
     setCurrentStep(1);
     setSelectedFile(null);
     setIsDragOver(false);
     setErrorMessage(null);
+    setIsUploading(false);
     onOpenChange(false);
   };
 
@@ -175,14 +222,21 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
         return (
           <div className="space-y-6 text-center">
             <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              {isUploading || createReport.isPending ? (
+                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              )}
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Analyzing your report...
+                {isUploading || createReport.isPending ? 'Uploading and Analyzing...' : 'Analyzing your report...'}
               </h3>
               <p className="text-gray-500 mt-1">
-                Our AI is extracting key information from your medical report
+                {isUploading || createReport.isPending 
+                  ? 'Uploading your file and starting AI analysis'
+                  : 'Our AI is extracting key information from your medical report'
+                }
               </p>
             </div>
             {selectedFile && (
@@ -195,8 +249,19 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
                     </span>
                   </div>
                   <Badge variant="outline" className="text-blue-600 border-blue-600">
-                    Processing
+                    {isUploading || createReport.isPending ? 'Uploading' : 'Processing'}
                   </Badge>
+                </div>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-red-800">
+                      {errorMessage}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
@@ -244,55 +309,16 @@ export function UploadReportDialog({ open, onOpenChange }: UploadReportDialogPro
                 Close
               </Button>
               <Button 
-                onClick={async () => {
-                  if (!selectedFile || !user) return;
-                  
-                  setIsUploading(true);
-                  try {
-                    // Upload file to backend for immediate AI analysis
-                    const newReport = await createReport.mutateAsync(selectedFile);
-                    
-                    if (newReport) {
-                      handleClose();
-                      
-                      // Check if analysis is available immediately
-                      if (newReport.medical_data) {
-                        // Show success message with analysis ready
-                        toast({
-                          title: "Analysis Complete!",
-                          description: "Your medical report has been analyzed. View your detailed AI insights now.",
-                        });
-                        
-                        // Navigate directly to the report with analysis
-                        navigate(`/reports/${newReport.id}`);
-                      } else {
-                        // Fallback message if no analysis (shouldn't happen with new flow)
-                        toast({
-                          title: "Report Uploaded Successfully!",
-                          description: "Your medical report has been uploaded and is being analyzed.",
-                        });
-                        
-                        // Navigate to reports page
-                        navigate('/reports');
-                      }
-                    }
-                  } catch (error) {
-                    toast({
-                      title: "Upload Failed",
-                      description: "Failed to upload and analyze your report. Please try again.",
-                      variant: "destructive",
-                    });
-                  } finally {
-                    setIsUploading(false);
+                onClick={() => {
+                  if (selectedFile) {
+                    // Navigate to reports page to view the uploaded report
+                    navigate('/reports');
+                    handleClose();
                   }
                 }}
                 disabled={isUploading || createReport.isPending}
               >
-                {isUploading || createReport.isPending ? (
-                  <>Analyzing Report...</>
-                ) : (
-                  <>Analyze Report</>
-                )}
+                View Report
               </Button>
             </div>
           </div>

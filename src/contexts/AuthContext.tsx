@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, Session, AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import { authBypass } from '@/lib/auth-bypass'
+import { tempAuthBypass } from '@/lib/temp-auth-bypass'
 
 interface AuthContextType {
   user: User | null
@@ -40,6 +40,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Get initial session with timeout
     const initializeAuth = async () => {
       try {
+        // First check for stored development session
+        const storedUser = await tempAuthBypass.checkStoredSession()
+        if (storedUser && isMounted) {
+          console.log('✅ Restoring stored development session')
+          setUser(storedUser)
+          setSession({
+            access_token: 'dev-bypass-token',
+            refresh_token: 'dev-bypass-refresh',
+            expires_in: 3600,
+            expires_at: Math.floor(Date.now() / 1000) + 3600,
+            token_type: 'bearer',
+            user: storedUser
+          } as any)
+          setLoading(false)
+          return
+        }
+
+        // Fallback to Supabase session
         const { data: { session }, error } = await supabase.auth.getSession()
         
         if (!isMounted) return;
@@ -95,14 +113,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         lastName: metadata?.lastName,
       }
 
-      // Try bypass signup first
-      const bypassResult = await authBypass.signUpWithBypass(email, password, signupMetadata)
+      // Try temporary bypass first for development
+      const bypassResult = await tempAuthBypass.signUpWithBypass(email, password, signupMetadata)
       
       if (bypassResult.bypassed) {
         return { user: bypassResult.user, error: bypassResult.error }
       }
 
-      // Fallback to normal signup if bypass not used
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -120,8 +137,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      // Try bypass signin first
-      const bypassResult = await authBypass.signInWithBypass(email, password)
+      // Try temporary bypass first for development
+      const bypassResult = await tempAuthBypass.signInWithBypass(email, password)
       
       if (bypassResult.bypassed) {
         // Manually set the user and session for bypassed login
@@ -137,7 +154,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return { user: bypassResult.user, error: bypassResult.error }
       }
 
-      // Normal signin if no bypass
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -151,7 +167,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signOut = async () => {
     try {
+      // Clear stored development session
+      await tempAuthBypass.signOutWithBypass()
+      
+      // Clear Supabase session
       const { error } = await supabase.auth.signOut()
+      
+      // Clear local state
+      setUser(null)
+      setSession(null)
+      
       return { error }
     } catch (error) {
       return { error: { message: 'Supabase not configured. Please set up your environment variables.' } as any }

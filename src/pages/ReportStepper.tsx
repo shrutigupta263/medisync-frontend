@@ -33,18 +33,12 @@ export default function ReportStepper() {
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Load medical report JSON data when component mounts
+  // This component should work with real uploaded files
+  // Remove mock data loading - use real file upload and analysis
   useEffect(() => {
-    const loadReportData = async () => {
-      // Load the medical report response data
-      const data = await loadMedicalReportData('/medical-report-response.json');
-      
-      if (data) {
-        setMedicalReportData(data);
-      }
-    };
-
-    loadReportData();
+    // TODO: This component should handle real file uploads and analysis
+    // For now, show message that this feature needs real data
+    console.log('ReportStepper: Mock data loading removed - use real file upload');
   }, []);
 
   const handleNext = () => {

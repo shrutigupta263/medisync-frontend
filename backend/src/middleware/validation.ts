@@ -10,7 +10,7 @@ import Joi from 'joi';
  */
 export const validateFileUpload = (req: Request, res: Response, next: NextFunction) => {
   const schema = Joi.object({
-    userId: Joi.string().uuid().required(),
+    userId: Joi.string().min(1).required(), // Allow any non-empty string for development
   });
 
   const { error } = schema.validate(req.body);
@@ -29,8 +29,8 @@ export const validateFileUpload = (req: Request, res: Response, next: NextFuncti
  */
 export const validateReportId = (req: Request, res: Response, next: NextFunction) => {
   const schema = Joi.object({
-    reportId: Joi.string().uuid().required(),
-    userId: Joi.string().uuid().required()
+    reportId: Joi.string().min(1).required(), // Allow any non-empty string for development
+    userId: Joi.string().min(1).required() // Allow any non-empty string for development
   });
 
   const { error } = schema.validate({
@@ -53,7 +53,7 @@ export const validateReportId = (req: Request, res: Response, next: NextFunction
  */
 export const validateUserId = (req: Request, res: Response, next: NextFunction) => {
   const schema = Joi.object({
-    userId: Joi.string().uuid().required()
+    userId: Joi.string().min(1).required() // Allow any non-empty string for development
   });
 
   const { error } = schema.validate(req.query);

@@ -11,16 +11,12 @@ export default function ReportSummary() {
   const [medicalReportData, setMedicalReportData] = useState<MedicalReportData | null>(null);
   const [testResultsTab, setTestResultsTab] = useState<'all' | 'abnormal'>('all');
 
-  // Load medical report JSON data when component mounts
+  // This component should receive report data as props or from URL params
+  // Remove mock data loading - use real report data instead
   useEffect(() => {
-    const loadReportData = async () => {
-      const data = await loadMedicalReportData('/medical-report-response.json');
-      if (data) {
-        setMedicalReportData(data);
-      }
-    };
-
-    loadReportData();
+    // TODO: Load real report data based on report ID from URL params
+    // For now, show message that this feature needs real data
+    console.log('ReportSummary: Mock data loading removed - use real report data');
   }, []);
 
   if (!medicalReportData) {

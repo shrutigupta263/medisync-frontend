@@ -55,7 +55,10 @@ export const upload = multer({
 
 // Error handling middleware
 export const handleUploadError = (error: any, req: Request, res: Response, next: NextFunction) => {
+  console.log('Upload error handler called:', error);
+  
   if (error instanceof multer.MulterError) {
+    console.log('Multer error:', error.code);
     if (error.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({ 
         error: 'File too large',
@@ -76,5 +79,6 @@ export const handleUploadError = (error: any, req: Request, res: Response, next:
     });
   }
   
+  console.log('Passing error to next middleware:', error);
   next(error);
 };

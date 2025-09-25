@@ -13,7 +13,7 @@ import dotenv from 'dotenv';
 // Import controllers and middleware
 import { ReportController } from './controllers/reportController.js';
 import { AnalysisController } from './controllers/analysisController.js';
-import { upload, handleUploadError } from './middleware/upload.ts';
+import { upload, handleUploadError } from './middleware/upload.js';
 import { validateFileUpload, validateReportId, validateUserId } from './middleware/validation.ts';
 import { 
   validateAnalysisRequest, 
@@ -30,8 +30,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Initialize controllers
+console.log('Initializing controllers...');
 const reportController = new ReportController();
 const analysisController = new AnalysisController();
+console.log('Controllers initialized');
 
 // Security middleware
 app.use(helmet());
@@ -76,6 +78,52 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Debug upload endpoint
+app.post('/api/debug/upload', upload.single('file'), (req, res) => {
+  console.log('Debug upload - body:', req.body);
+  console.log('Debug upload - file:', req.file);
+  res.json({ 
+    body: req.body, 
+    file: req.file ? { name: req.file.originalname, size: req.file.size } : null 
+  });
+});
+
+// Simple test route
+app.post('/api/test', (req, res) => {
+  console.log('Test route called');
+  res.json({ message: 'Test route working' });
+});
+
+// Simple upload test route
+app.post('/api/simple-upload', upload.single('file'), (req, res) => {
+  console.log('Simple upload route called');
+  console.log('Body:', req.body);
+  console.log('File:', req.file);
+  res.json({ 
+    message: 'Simple upload working',
+    body: req.body,
+    file: req.file ? { name: req.file.originalname, size: req.file.size } : null
+  });
+});
+
+// Controller test route
+app.post('/api/controller-test', upload.single('file'), async (req, res) => {
+  console.log('Controller test route called');
+  console.log('reportController:', typeof reportController);
+  console.log('uploadReport method:', typeof reportController.uploadReport);
+  try {
+    console.log('Calling reportController.uploadReport');
+    await reportController.uploadReport(req, res);
+    console.log('reportController.uploadReport completed');
+  } catch (error) {
+    console.error('Controller test error:', error);
+    res.status(500).json({ 
+      error: 'Controller test failed', 
+      details: error instanceof Error ? error.message : 'Unknown error' 
+    });
+  }
+});
+
 // API Routes
 app.use('/api', (req, res, next) => {
   console.log(`${req.method} ${req.path} - ${req.ip}`);
@@ -85,9 +133,20 @@ app.use('/api', (req, res, next) => {
 // Report routes
 app.post('/api/reports/upload', 
   upload.single('file'),
-  handleUploadError,
-  validateFileUpload,
-  (req, res) => reportController.uploadReport(req, res)
+  async (req, res) => {
+    console.log('Upload route called');
+    try {
+      console.log('Calling uploadReport method');
+      await reportController.uploadReport(req, res);
+      console.log('UploadReport method completed');
+    } catch (error) {
+      console.error('Upload route error:', error);
+      res.status(500).json({ 
+        error: 'Upload failed', 
+        details: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  }
 );
 
 app.get('/api/reports/:reportId/status',

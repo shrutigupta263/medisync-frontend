@@ -29,46 +29,9 @@ interface FamilyMemberHealth {
   recentReports: number;
 }
 
-const familyHealthData: FamilyMemberHealth[] = [
-  {
-    id: '1',
-    name: 'Yash Gupta',
-    relationship: 'Self',
-    age: 34,
-    healthScore: 92,
-    lastCheckup: '2024-01-15',
-    vitals: {
-      bloodPressure: '120/80',
-      heartRate: 72,
-      weight: 165,
-      temperature: 98.6
-    },
-    alerts: [
-      { type: 'medium', message: 'Cholesterol test due next month' }
-    ],
-    upcomingAppointments: 2,
-    recentReports: 3
-  },
-  {
-    id: '2',
-    name: 'Jane Doe',
-    relationship: 'Spouse',
-    age: 32,
-    healthScore: 88,
-    lastCheckup: '2024-01-10',
-    vitals: {
-      bloodPressure: '118/75',
-      heartRate: 68,
-      weight: 125,
-      temperature: 98.4
-    },
-    alerts: [
-      { type: 'low', message: 'Annual mammogram scheduled' }
-    ],
-    upcomingAppointments: 1,
-    recentReports: 2
-  },
-];
+// TODO: Replace with real family member data from database
+// For now, return empty array to avoid showing mock data
+const familyHealthData: FamilyMemberHealth[] = [];
 
 export default function FamilyHealthDashboard() {
   const getHealthScoreColor = (score: number) => {
